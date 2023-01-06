@@ -1,8 +1,8 @@
 <template>
-  <div class="app bg-dark p-3">
+  <div class="app bg-dark p-3 d-flex flex-column" style="min-height:100vh">
     <Navbar/>  
     <router-view/>
-    <Footer/>
+    <Footer class=" mt-auto"/>
   </div>
 </template>
 
