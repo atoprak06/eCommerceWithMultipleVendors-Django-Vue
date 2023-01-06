@@ -20,7 +20,7 @@
                         <router-link class="nav-link active" aria-current="page" to="sign-in">Sign in</router-link>
                     </li>
                     <li class="nav-item">
-                        <router-link class="nav-link active" aria-current="page" to="#">Register</router-link>
+                        <router-link class="nav-link active" aria-current="page" to="register">Register</router-link>
                     </li>              
                 </ul>
             </div>
