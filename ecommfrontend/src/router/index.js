@@ -3,7 +3,9 @@ import HomeView from '../views/HomeView.vue'
 import SignInView from '../views/SignInView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import UserPageView from '../views/UserPageView.vue'
-
+import CategoriesView from '../views/CategoriesView.vue'
+import VendorsView from '../views/VendorsView.vue'
+import ContactView from '../views/ContactView.vue'
 
 
 const routes = [
@@ -11,6 +13,21 @@ const routes = [
     path: '/',
     name: 'home',
     component: HomeView
+  },
+  {
+    path: '/contact',
+    name: 'contact',
+    component: ContactView
+  },
+  {
+    path: '/vendors',
+    name: 'vendors',
+    component: VendorsView
+  },
+  {
+    path: '/categories',
+    name: 'categories',
+    component: CategoriesView
   },
   {
     path: '/user-page',
