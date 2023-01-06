@@ -17,7 +17,7 @@
                 </form>
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <router-link class="nav-link active" aria-current="page" to="#">Sign in</router-link>
+                        <router-link class="nav-link active" aria-current="page" to="sign-in">Sign in</router-link>
                     </li>
                     <li class="nav-item">
                         <router-link class="nav-link active" aria-current="page" to="#">Register</router-link>
