@@ -8,19 +8,31 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                    <router-link class="nav-link active" aria-current="page" to="about">About</router-link>
-                    </li>                
+                        <router-link class="nav-link" to="categories">Categories</router-link>
+                    </li>
+                    <li class="nav-item">
+                        <router-link class="nav-link" to="vendors">Vendors</router-link>
+                    </li>
+                    <li class="nav-item">
+                        <router-link class="nav-link" to="about">About</router-link>
+                    </li>
+                    <li class="nav-item">
+                        <router-link class="nav-link" to="contact">Contact Us</router-link>
+                    </li>             
                 </ul>
                 <form class="d-flex">
                     <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-success" type="submit">Search</button>
                 </form>
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <ul class="navbar-nav ms-auto my-2 mb-lg-0">
                     <li class="nav-item">
-                        <router-link class="nav-link active" aria-current="page" to="sign-in">Sign in</router-link>
+                        <router-link class="nav-link" to="sign-in">Sign in</router-link>
+                    </li>
+                    <li class="nav-item d-none d-xxl-block d-xl-block d-lg-block">
+                        <p class="nav-link text-white">|</p>
                     </li>
                     <li class="nav-item">
-                        <router-link class="nav-link active" aria-current="page" to="register">Register</router-link>
+                        <router-link class="nav-link" to="register">Register</router-link>
                     </li>              
                 </ul>
             </div>
