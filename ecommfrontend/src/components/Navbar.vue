@@ -35,6 +35,12 @@
                         <router-link class="nav-link" to="register">Register</router-link>
                     </li>              
                 </ul>
+                <router-link to="cart">                    
+                    <i class="fa-solid fa-cart-shopping text-white fs-3 ms-3 position-relative">
+                        <span style="margin-left:-5px; margin-top:-12px" class=" rounded-circle bg-danger position-absolute small p-1 fs-6">2</span>
+                    </i>
+                </router-link>
+
             </div>
         </div>
     </nav>
