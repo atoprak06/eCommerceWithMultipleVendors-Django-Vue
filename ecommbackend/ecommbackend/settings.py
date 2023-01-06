@@ -55,6 +55,10 @@ REST_FRAMEWORK = {
     )
 }
 
+DJOSER = {
+    'USER_CREATE_PASSWORD_RETYPE' : True,
+}
+
 ROOT_URLCONF = 'ecommbackend.urls'
 
 TEMPLATES = [
