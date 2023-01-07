@@ -19,6 +19,11 @@
                     <label for="password2" class="form-label text-white">Confirm Password:</label>
                     <input type="password" v-model="re_password" class="form-control" id="password2">
                 </div>
+                 <div class="mb-3">                    
+                    <input type="checkbox" v-model="is_vendor" class="form-check-input" id="is_vendor">
+                    <label for="is_vendor" class="form-label text-white ms-3">Are you vendor?</label>
+                </div>
+
                 <div v-if="errors">
                     <div class="my-2 text-center "   v-for="error in errors" :key="error">
                         <small class=" small text-white bg-danger p-1 rounded-1">{{error}}</small>
@@ -46,6 +51,7 @@ export default {
             email:'',
             password:'',
             re_password:'',
+            is_vendor:'',
             errors:[]
         }
     },
@@ -56,7 +62,8 @@ export default {
                 username :this.username,
                 email: this.email,
                 password : this.password,
-                re_password:this.re_password
+                re_password:this.re_password,
+                is_vendor:this.is_vendor
             }            
             axios
                 .post('api/users/',user)
