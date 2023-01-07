@@ -93,7 +93,13 @@ export default {
                 email: this.email,
                 password : this.password,
                 re_password:this.re_password,
-                is_vendor:this.is_vendor
+                is_vendor:this.is_vendor,
+                first_name:this.first_name,
+                last_name:this.last_name,
+                user_age:this.user_age,
+                user_country:this.user_country,
+                user_city:this.user_city,
+                user_address:this.user_address
             }            
             axios
                 .post('api/users/',user)
