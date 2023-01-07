@@ -5,21 +5,26 @@
             <form class="mt-5" style="width:100%; max-width:30rem"> 
                 <div class="mb-3">
                     <label for="username" class="form-label text-white">Username:</label>
-                    <input type="text" class="form-control" id="username" aria-describedby="emailHelp">                    
+                    <input v-model="username" type="text" class="form-control" id="username" aria-describedby="emailHelp">                    
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label text-white">Password:</label>
-                    <input type="password" class="form-control" id="password">
+                    <input v-model="password" type="password" class="form-control" id="password">
                 </div>
                 <div class="mb-3 form-check">
                     <input type="checkbox" class="form-check-input" id="rememberme">
                     <label class="form-check-label text-white" for="rememerme">Remember me</label>
                 </div>
+                <div v-if="errors">
+                    <div class="my-2 text-center "   v-for="error in errors" :key="error">
+                        <small class=" small text-white bg-danger p-1 rounded-1">{{error}}</small>
+                    </div>
+                </div>      
                 <div class="mb-3 text-end">
                     <router-link to="register" class="text-primary">Don't have an account?</router-link>
                 </div>              
                 <div class="d-flex justify-content-end">
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button @click.prevent='submit' type="submit" class="btn btn-primary">Submit</button>
                 </div>
             </form>
         </div>
@@ -28,7 +33,49 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
-    name:'SignInView'
+    name:'SignInView',
+    data(){
+        return {
+            username : '',
+            password : '',
+            errors : []
+        }
+    },
+    methods:{
+        submit(){
+            this.errors = []
+            const userlog={
+                username:this.username,
+                password:this.password
+            }
+            axios
+                .post('api/token/login',userlog)
+                .then(response=>{
+                    console.log(response.data)                    
+                })
+                .catch(error=> {
+                    if (error.response) {
+                    // The request was made and the server responded with a status code
+                    // that falls out of the range of 2xx
+                        for(const property in error.response.data){
+                            this.errors.push(`${property}:${error.response.data[property]}`)
+                        }                                                
+                    } else if (error.request) {
+                    // The request was made but no response was received
+                    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+                    // http.ClientRequest in node.js
+                    console.log(error.request);                    
+                    } else {
+                    // Something happened in setting up the request that triggered an Error
+                    console.log('Error', error.message);
+                    }
+                    console.log(error.config);
+                });  
+
+
+        }
+    }
 }
 </script>
