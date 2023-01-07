@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'corsheaders',
     'djoser',
+    'user'
 
 ]
 
@@ -58,6 +59,9 @@ MIDDLEWARE = [
 
 DJOSER = {
     'USER_CREATE_PASSWORD_RETYPE' : True,
+    'SERIALIZERS': {
+         'user_create': 'user.serializer.UserRegistrationSerializer'
+    }
 }
 
 ROOT_URLCONF = 'ecommbackend.urls'
@@ -132,3 +136,5 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'user.UserProfile'
