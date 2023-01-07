@@ -5,11 +5,35 @@
             <form class="mt-5" style="width:100%; max-width:30rem"> 
                 <div class="mb-3">
                     <label for="username" class="form-label text-white">Username:</label>
-                    <input type="text" v-model="username" class="form-control" id="username" aria-describedby="emailHelp">                    
+                    <input type="text" v-model="username" class="form-control" id="username">                    
                 </div>
                 <div class="mb-3">
                     <label for="mail" class="form-label text-white">Email:</label>
-                    <input type="mail" v-model="email" class="form-control" id="mail" aria-describedby="emailHelp">                    
+                    <input type="mail" v-model="email" class="form-control" id="mail">                    
+                </div>
+                <div class="mb-3">
+                    <label for="firstname" class="form-label text-white">First Name:</label>
+                    <input type="text" v-model="first_name" class="form-control" id="firstname">                    
+                </div>
+                <div class="mb-3">
+                    <label for="lastname" class="form-label text-white">Last Name:</label>
+                    <input type="text" v-model="last_name" class="form-control" id="lastname">                    
+                </div>
+                <div class="mb-3">
+                    <label for="country" class="form-label text-white">Country:</label>
+                    <input type="text" v-model="user_country" class="form-control" id="country">                    
+                </div>
+                <div class="mb-3">
+                    <label for="city" class="form-label text-white">City:</label>
+                    <input type="text" v-model="user_city" class="form-control" id="city">                    
+                </div>
+                <div class="mb-3">
+                    <label for="address" class="form-label text-white">Address:</label>
+                    <input type="text" v-model="user_address" class="form-control" id="address">                    
+                </div>
+                <div class="mb-3">
+                    <label for="age" class="form-label text-white">Age</label>
+                    <input type="text" v-model="user_age" class="form-control" id="age">                    
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label text-white">Password:</label>
@@ -51,7 +75,13 @@ export default {
             email:'',
             password:'',
             re_password:'',
-            is_vendor:'',
+            is_vendor:false,
+            first_name:'',
+            last_name:'',
+            user_age:'',
+            user_country: '',
+            user_city: '',
+            user_address: '',
             errors:[]
         }
     },
