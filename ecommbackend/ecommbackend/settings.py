@@ -19,7 +19,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:8080',    
 ]
 
-REST_FRAMEWORKS = {   
+REST_FRAMEWORK = {   
     'DEFAULT_AUTHENTICATION_CLASSES':(
         'rest_framework.authentication.TokenAuthentication',
     ),
@@ -60,6 +60,7 @@ MIDDLEWARE = [
 DJOSER = {    
     'SERIALIZERS': {
          'user' : 'user.serializers.UserRegistrationSerializer',
+         'current_user' :'user.serializers.UserRegistrationSerializer',
          'user_create_password_retype': 'user.serializers.UserRePasswordSerializer',
          'user_create': 'user.serializers.UserRegistrationSerializer',                 
     },
