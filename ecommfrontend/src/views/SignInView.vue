@@ -32,10 +32,24 @@
     
 </template>
 
-<script>
+<script >
 import axios from 'axios'
+import { useTokenStore } from '../stores/TokensStore'
+import { mapStores } from 'pinia'
+
 export default {
-    name:'SignInView',
+    name:'SignInView', 
+    created(){        
+        const token = localStorage.getItem('token')              
+        if(token){
+            axios.defaults.headers.common['Authorization'] = 'Token ' + token
+        }else{
+            axios.defaults.headers.common['Authorization'] = ''
+        }
+    },
+    computed:{
+        ...mapStores(useTokenStore)
+    },   
     data(){
         return {
             username : '',
@@ -44,16 +58,25 @@ export default {
         }
     },
     methods:{
-        submit(){
+        submit(){            
             this.errors = []
+            axios.defaults.headers.common['Authorization'] = ''
+            localStorage.removeItem('token')
             const userlog={
                 username:this.username,
                 password:this.password
             }
             axios
                 .post('api/token/login',userlog)
-                .then(response=>{
-                    console.log(response.data)                    
+                .then(response=>{                    
+                    const token = response.data.auth_token
+                    console.log(token)
+                    this.tokenStore.setToken
+                    console.log(this.tokenStore.token)                 
+                    axios.defaults.headers.common['Authorization'] = 'Token' + token
+                    localStorage.setItem('token',token)
+                    this.$router.push('/')
+
                 })
                 .catch(error=> {
                     if (error.response) {
