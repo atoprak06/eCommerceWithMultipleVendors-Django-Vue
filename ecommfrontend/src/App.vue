@@ -9,12 +9,20 @@
 <script>
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
+import { useTokenStore } from './stores/TokensStore'
+import { mapStores } from 'pinia'
 
 export default {
   components:{
     Navbar,
     Footer
-  }
+  },
+  created(){        
+    this.tokenStore.initializeToken       
+},
+computed:{
+  ...mapStores(useTokenStore)
+},  
 }
 </script>
 
