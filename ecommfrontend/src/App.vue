@@ -11,14 +11,21 @@ import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import { useTokenStore } from './stores/TokensStore'
 import { mapStores } from 'pinia'
+import axios from 'axios'
 
-export default {
+export default {  
   components:{
     Navbar,
     Footer
   },
   created(){        
-    this.tokenStore.initializeToken       
+    this.tokenStore.initializeToken
+    const token = this.tokenStore.token              
+    if(token){
+        axios.defaults.headers.common['Authorization'] = 'Token ' + token
+    }else{
+        axios.defaults.headers.common['Authorization'] = ''
+    }      
 },
 computed:{
   ...mapStores(useTokenStore)

@@ -38,15 +38,7 @@ import { useTokenStore } from '../stores/TokensStore'
 import { mapStores } from 'pinia'
 
 export default {
-    name:'SignInView', 
-    created(){        
-        const token = localStorage.getItem('token')              
-        if(token){
-            axios.defaults.headers.common['Authorization'] = 'Token ' + token
-        }else{
-            axios.defaults.headers.common['Authorization'] = ''
-        }
-    },
+    name:'SignInView',     
     computed:{
         ...mapStores(useTokenStore)
     },   
@@ -69,14 +61,11 @@ export default {
             axios
                 .post('api/token/login',userlog)
                 .then(response=>{                    
-                    const token = response.data.auth_token
-                    console.log(token)
-                    this.tokenStore.setToken
-                    console.log(this.tokenStore.token)                 
-                    axios.defaults.headers.common['Authorization'] = 'Token' + token
+                    const token = response.data.auth_token                    
+                    this.tokenStore.setToken(token)                                     
+                    axios.defaults.headers.common['Authorization'] = this.tokenStore.token                    
                     localStorage.setItem('token',token)
                     this.$router.push('/')
-
                 })
                 .catch(error=> {
                     if (error.response) {
@@ -95,9 +84,7 @@ export default {
                     console.log('Error', error.message);
                     }
                     console.log(error.config);
-                });  
-
-
+                });
         }
     }
 }

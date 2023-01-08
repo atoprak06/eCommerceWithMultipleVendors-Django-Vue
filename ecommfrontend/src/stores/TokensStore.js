@@ -17,18 +17,16 @@ export const useTokenStore = defineStore('token', {
             state.token = ''
             state.isAuthenticated=false
         }
-      },
-      setToken(state,token){
-        state.token = 'Token' + token
-        state.isAuthenticated=true
-      },
+      },      
       removeToken(state){
         state.token = '',
         state.isAuthenticated=false
       }
     },
-    actions: {
-      
-     
+    actions: {      
+      setToken(token){        
+        this.token = 'Token ' + token        
+        this.isAuthenticated=true
+      },     
     },
   })
