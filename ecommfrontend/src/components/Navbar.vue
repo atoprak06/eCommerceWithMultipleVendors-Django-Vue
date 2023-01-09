@@ -39,6 +39,9 @@
                     <li class="nav-item">
                         <router-link class="nav-link" to="/">{{tokenStore.user.username}}</router-link>                        
                     </li>
+                    <li>
+                        <button @click.prevent="logout" class="btn btn-danger">logout</button>
+                    </li>
                 </ul>
                 <router-link to="cart">                    
                     <i class="fa-solid fa-cart-shopping text-white fs-3 ms-3 position-relative">
@@ -56,8 +59,16 @@ import {useTokenStore} from '../stores/TokensStore'
 export default {
     name:'Navbar',
     setup(){
-       const tokenStore = useTokenStore()    
+        const tokenStore = useTokenStore()
+        console.log(tokenStore.user, tokenStore.isAuthenticated, tokenStore.token)           
+
        return {tokenStore}         
-    },   
+    },
+    methods:{
+        logout(){            
+            this.tokenStore.removeToken
+            window.location.reload()
+        }
+    }  
 }
 </script>

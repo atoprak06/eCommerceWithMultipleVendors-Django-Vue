@@ -3,9 +3,7 @@ import axios from 'axios'
 
 export const useTokenStore = defineStore('token', {
     state: () => ({ 
-        user:{
-            username:''
-        },
+        user:{},
         token:'',
         isAuthenticated:false 
     }),
@@ -20,8 +18,11 @@ export const useTokenStore = defineStore('token', {
         }
       },      
       removeToken(state){
-        state.token = '',
+        axios.post('api/token/logout')
+        state.token = ''
         state.isAuthenticated=false
+        state.user={}
+        localStorage.removeItem('token')
       },
       getUser(state){        
         axios
