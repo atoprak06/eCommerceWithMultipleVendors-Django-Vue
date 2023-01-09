@@ -37,7 +37,7 @@
                 </ul>
                 <ul v-else class="navbar-nav ms-auto my-2 mb-lg-0">
                     <li class="nav-item">
-                        <router-link class="nav-link" to="/">{{tokenStore.user.username}}</router-link>                        
+                        <router-link class="nav-link" to="user-page">{{tokenStore.user.username}}</router-link>                        
                     </li>
                     <li>
                         <button @click.prevent="logout" class="btn btn-danger">logout</button>
@@ -59,9 +59,7 @@ import {useTokenStore} from '../stores/TokensStore'
 export default {
     name:'Navbar',
     setup(){
-        const tokenStore = useTokenStore()
-        console.log(tokenStore.user, tokenStore.isAuthenticated, tokenStore.token)           
-
+        const tokenStore = useTokenStore()        
        return {tokenStore}         
     },
     methods:{
