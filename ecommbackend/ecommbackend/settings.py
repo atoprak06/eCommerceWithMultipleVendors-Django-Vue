@@ -59,10 +59,9 @@ MIDDLEWARE = [
 
 DJOSER = {    
     'SERIALIZERS': {
-         'user' : 'user.serializers.UserRegistrationSerializer',
-         'current_user' :'user.serializers.UserRegistrationSerializer',
-         'user_create_password_retype': 'user.serializers.UserRePasswordSerializer',
-         'user_create': 'user.serializers.UserRegistrationSerializer',                 
+         'user' : 'user.serializers.UserShowSerializer',
+         'current_user' :'user.serializers.UserShowSerializer',         
+         'user_create_password_retype': 'user.serializers.UserRegistrationSerializer',
     },
     'USER_CREATE_PASSWORD_RETYPE':True,
     
