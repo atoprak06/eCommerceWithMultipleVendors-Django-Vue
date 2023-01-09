@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import axios from 'axios'
 
 export const useTokenStore = defineStore('token', {
     state: () => ({ 
@@ -21,6 +22,13 @@ export const useTokenStore = defineStore('token', {
       removeToken(state){
         state.token = '',
         state.isAuthenticated=false
+      },
+      getUser(state){        
+        axios
+            .get('api/users/me')
+            .then(response=>{
+                state.user=response.data
+            })
       }
     },
     actions: {      
