@@ -24,7 +24,7 @@
                     <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-success" type="submit">Search</button>
                 </form>
-                <ul v-if="!isAuthenticated" class="navbar-nav ms-auto my-2 mb-lg-0">
+                <ul v-if="!tokenStore.isAuthenticated" class="navbar-nav ms-auto my-2 mb-lg-0">
                     <li class="nav-item">
                         <router-link class="nav-link" to="sign-in">Sign in</router-link>
                     </li>
@@ -35,10 +35,9 @@
                         <router-link class="nav-link" to="register">Register</router-link>
                     </li>              
                 </ul>
-                <ul v-else-if="isAuthenticated" class="navbar-nav ms-auto my-2 mb-lg-0">
+                <ul v-else class="navbar-nav ms-auto my-2 mb-lg-0">
                     <li class="nav-item">
-                        <router-link class="nav-link" to="/">{{user.username}}</router-link>
-                        
+                        <router-link class="nav-link" to="/">{{tokenStore.user.username}}</router-link>                        
                     </li>
                 </ul>
                 <router-link to="cart">                    
@@ -54,50 +53,11 @@
 
 <script>
 import {useTokenStore} from '../stores/TokensStore'
-import {mapState} from 'pinia'
-import axios from 'axios'
 export default {
     name:'Navbar',
-    computed:{
-        ...mapState(useTokenStore,['isAuthenticated','user']),              
-    },
-    data(){
-        return {
-            errors:[],
-            user:{}
-        }
-    },
-    created(){
-        this.errors = []
-            axios
-                .get('api/users/me')
-                .then(response=>{
-                    this.user=response.data
-                })
-                .catch(error=> {
-                    if (error.response) {
-                    // The request was made and the server responded with a status code
-                    // that falls out of the range of 2xx
-                        for(const property in error.response.data){
-                            this.errors.push(`${property}:${error.response.data[property]}`)
-                        }                                                
-                    } else if (error.request) {
-                    // The request was made but no response was received
-                    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-                    // http.ClientRequest in node.js
-                    console.log(error.request);                    
-                    } else {
-                    // Something happened in setting up the request that triggered an Error
-                    console.log('Error', error.message);
-                    }
-                    console.log(error.config);
-                });
-    },
-    methods:{
-        getUser(){
-            
-        }
-    }
-    
+    setup(){
+       const tokenStore = useTokenStore()    
+       return {tokenStore}         
+    },   
 }
 </script>
