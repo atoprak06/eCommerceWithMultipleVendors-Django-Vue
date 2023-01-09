@@ -1,12 +1,20 @@
 <template>
     <div class="footer container text-center">
-        <h3 class="text-white">Hello Username</h3>
-        <router-link to="user-page" class="text-decoration-none"><p class="text-success">Check out your page</p></router-link>
+        <div v-if="tokenStore.isAuthenticated">
+            <h3 class="text-warning">Hello {{tokenStore.user.username}}</h3>
+            <router-link to="edit-profile" class="text-decoration-none">Edit your profile</router-link>
+        </div>
+        <h2 class="text-white">eCommerce 2023</h2>
     </div>    
 </template>
 
 <script>
+import {useTokenStore} from '../stores/TokensStore'
 export default {
-    name:'Footer'
+    name:'Footer',
+    setup(){
+        const tokenStore = useTokenStore()
+        return{tokenStore}
+    },    
 }
 </script>
