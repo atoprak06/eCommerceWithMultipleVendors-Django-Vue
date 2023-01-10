@@ -16,7 +16,7 @@
             </div>
             <div class="mb-3">
                 <label for="age" class="form-label text-white">Age:</label>
-                <input v-model="tokenStore.user.user_age" type="number" class="form-control" id="age">                    
+                <input v-model="tokenStore.user.user_age" type="number" min='18' max='100' class="form-control" id="age">                    
             </div>
             <div class="mb-3">
                 <label for="country" class="form-label text-white">Country:</label>
@@ -34,9 +34,9 @@
                 <label for="gender" class="form-label text-white">Gender:</label>
                 <select v-model="tokenStore.user.user_gender" class="form-select" id="gender">
                     <option selected>{{tokenStore.user.user_gender}}</option>
-                    <option v-if="tokenStore.user.user_gender==='female'" value="male">male</option>
-                    <option v-if="tokenStore.user.user_gender==='male'" value="female">female</option>
-                    <option value="other">other</option>
+                    <option v-if="tokenStore.user.user_gender!='male'" value="male">male</option>
+                    <option v-if="tokenStore.user.user_gender!='female'" value="female">female</option>
+                    <option v-if="tokenStore.user.user_gender!='other'" value="other">other</option>
                 </select>                    
             </div>
             <div class="mb-3 form-check">
