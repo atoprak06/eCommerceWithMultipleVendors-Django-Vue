@@ -4,7 +4,7 @@
         <table class="table table-hover">
             <thead class="table-dark">
                 <tr>
-                    <th scope="col">id</th>
+                    <th scope="col">Product id</th>
                     <th scope="col">Product Title</th>
                     <th scope="col">Product Price</th>
                     <th scope="col">Date Added</th>
@@ -13,28 +13,13 @@
                 </tr>
             </thead>
             <tbody class="table-dark">
-                <tr>
-                    <th scope="row">1</th>
-                    <td>Product 1 </td>
-                    <td>$25.33</td>
-                    <td>12.10.2021</td>
-                    <td class="text-success">Online</td>
-                    <td><router-link to="#" class="btn btn-danger">Show/Edit</router-link></td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>Product 2</td>
-                    <td>$22.22</td>
-                    <td>10.10.2021</td>
-                    <td class="text-success">Online</td>
-                    <td><router-link to="#" class="btn btn-danger">Show/Edit</router-link></td>
-                </tr>
-                <tr>
-                    <th scope="row">3</th>
-                    <td>Product 3</td>
-                    <td>$124.55</td>
-                    <td>08.10.2021</td>
-                    <td class="text-danger">Offline</td>
+                <tr v-for="product in userProducts" :key="product.id">
+                    <th scope="row">{{product.id}}</th>
+                    <td>{{product.title}} </td>
+                    <td>${{product.price}}</td>
+                    <td>{{getTime(product.created_at)}}</td>
+                    <td v-if="product.product_state==='active'" class="text-success">{{product.product_state}}</td>
+                    <td v-if="product.product_state==='deactive'" class="text-danger">{{product.product_state}}</td>
                     <td><router-link to="#" class="btn btn-danger">Show/Edit</router-link></td>
                 </tr>
             </tbody>
@@ -58,17 +43,31 @@
                 <p class="text-white">23 hours ago</p>
             </li>
             <hr class="text-white m-0">
-            
-            
         </ul>
-        
-
         <h5 class="text-success text-end">My Balance: $1244.66</h5>
     </div>
 </template>
 
 <script>
+import axios from 'axios'
+import moment from 'moment';
 export default {
-    name:'UserPageView'
+    name:'UserPageView',
+    data(){
+        return {
+            userProducts:[]
+        }
+    },
+    methods:{
+        getTime(time){
+            return moment(time).fromNow()
+        }
+    },  
+    created(){
+        axios.get('api/products/my_products')
+             .then(response=>{                
+                this.userProducts=response.data
+             })
+    }
 }
 </script>
