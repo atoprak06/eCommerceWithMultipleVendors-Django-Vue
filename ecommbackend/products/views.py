@@ -7,6 +7,7 @@ from .serializers import ProductSerializer,CategorySerializer
 from .models import Product,Category
 from user.models import UserProfile
 from user.serializers import UserShowSerializer
+from django.template.defaultfilters import slugify
 
 
 class ProductViewSet(viewsets.ModelViewSet):
@@ -15,7 +16,14 @@ class ProductViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly,IsOwnerOrReadOnly]  
 
     def perform_create(self, serializer):        
-        serializer.save(created_by=self.request.user)
+        serializer.save(created_by=self.request.user,slug=slugify(self.request.data['title']))
+        
+    
+    def list(self,request):
+        products = Product.objects.filter(product_state='active')
+        serializer= ProductSerializer(products,many=True)
+        return Response(serializer.data)
+       
     
     @action(detail=False)
     def my_products(self,request):
