@@ -8,16 +8,16 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <router-link class="nav-link" to="categories">Categories</router-link>
+                        <router-link class="nav-link" :to="{name:'categories'}">Categories</router-link>
                     </li>
                     <li class="nav-item">
-                        <router-link class="nav-link" to="vendors">Vendors</router-link>
+                        <router-link class="nav-link" :to="{name:'vendors'}">Vendors</router-link>
                     </li>
                     <li class="nav-item">
-                        <router-link class="nav-link" to="about">About</router-link>
+                        <router-link class="nav-link" :to="{name:'about'}">About</router-link>
                     </li>
                     <li class="nav-item">
-                        <router-link class="nav-link" to="contact">Contact Us</router-link>
+                        <router-link class="nav-link" :to="{name:'contact'}">Contact Us</router-link>
                     </li>             
                 </ul>
                 <form class="d-flex">
@@ -26,18 +26,18 @@
                 </form>
                 <ul v-if="!tokenStore.isAuthenticated" class="navbar-nav ms-auto my-2 mb-lg-0">
                     <li class="nav-item">
-                        <router-link class="nav-link" to="sign-in">Sign in</router-link>
+                        <router-link class="nav-link" :to="{name:'signin'}">Sign in</router-link>
                     </li>
                     <li class="nav-item d-none d-xxl-block d-xl-block d-lg-block">
                         <p class="nav-link text-white">|</p>
                     </li>
                     <li class="nav-item">
-                        <router-link class="nav-link" to="register">Register</router-link>
+                        <router-link class="nav-link" :to="{name:'register'}">Register</router-link>
                     </li>              
                 </ul>
                 <ul v-else class="navbar-nav ms-auto my-2 mb-lg-0">
                     <li class="nav-item">
-                        <router-link class="nav-link" to="user-page">{{tokenStore.user.username}}</router-link>                        
+                        <router-link class="nav-link" :to="{name:'userpage'}">{{tokenStore.user.username}}</router-link>                        
                     </li>
                     <li>
                         <button @click.prevent="logout" class="btn btn-danger">logout</button>
