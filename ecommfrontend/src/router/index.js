@@ -8,6 +8,10 @@ import VendorsView from '../views/VendorsView.vue'
 import ContactView from '../views/ContactView.vue'
 import CartView from '../views/CartView.vue'
 import EditProfileView from '../views/EditProfileView'
+import ProductView from '../views/ProductView'
+import AddProductView from '../views/AddProductView'
+
+
 
 
 
@@ -16,6 +20,16 @@ const routes = [
     path: '/',
     name: 'home',
     component: HomeView
+  },
+  {
+    path: '/new-product',
+    name: 'newproduct',
+    component: AddProductView
+  },
+  {
+    path: '/product/:slug/:id',
+    name: 'product',
+    component: ProductView
   },
   {
     path: '/edit-profile',
