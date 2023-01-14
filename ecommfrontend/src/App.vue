@@ -1,5 +1,5 @@
 <template>
-  <div class="app bg-dark p-3 d-flex flex-column" style="min-height:100vh">
+  <div class="app bg-dark d-flex flex-column mx-auto" style="min-height:100vh">
     <Navbar/>  
     <router-view/>
     <Footer class=" mt-auto"/>
