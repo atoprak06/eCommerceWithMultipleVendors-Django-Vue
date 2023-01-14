@@ -1,6 +1,8 @@
 from django.db import models
 from user.models import UserProfile
 from django.template.defaultfilters import slugify
+from faker import Faker
+fake=Faker()
 
 class Category(models.Model):
     title = models.CharField(max_length=100)
@@ -24,6 +26,7 @@ class Product(models.Model):
     description = models.TextField(max_length=255,null=True,blank=True)
     product_state_choices = (('active','Active'),('deactive','Deactive'))
     product_state = models.CharField(max_length=40,choices=product_state_choices,default='active')
+    image_url = models.CharField(max_length=255,default=fake.image_url())
 
     class Meta:
         ordering = ['-created_at']
