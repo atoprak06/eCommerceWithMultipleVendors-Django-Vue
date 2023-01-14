@@ -8,6 +8,7 @@ from .models import Product,Category
 from user.models import UserProfile
 from user.serializers import UserShowSerializer
 from django.template.defaultfilters import slugify
+from django.db.models import Prefetch
 
 
 class ProductViewSet(viewsets.ModelViewSet):
@@ -40,5 +41,5 @@ class VendorsViewSet(viewsets.ReadOnlyModelViewSet):
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = CategorySerializer
-    queryset = Category.objects.all()
-    permission_classes = [IsAuthenticatedOrReadOnly,IsOwnerOrReadOnly]
+    queryset = Category.objects.prefetch_related(Prefetch('products',queryset=Product.objects.filter(product_state='active')))    
+    permission_classes = [IsAuthenticatedOrReadOnly]
