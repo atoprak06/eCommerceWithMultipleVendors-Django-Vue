@@ -20,11 +20,11 @@
                     <td>{{getTime(product.created_at)}}</td>
                     <td v-if="product.product_state==='active'" class="text-success">{{product.product_state}}</td>
                     <td v-if="product.product_state==='deactive'" class="text-danger">{{product.product_state}}</td>
-                    <td><router-link to="#" class="btn btn-danger">Show/Edit</router-link></td>
+                    <td><router-link :to="{name: 'product', params: { slug:product.slug, id: product.id }}" class="btn btn-danger">Show/Edit</router-link></td>
                 </tr>
             </tbody>
         </table>     
-        <router-link class="btn btn-danger" to="/">Add new product</router-link>
+        <router-link class="btn btn-danger" :to="{name:'newproduct'}">Add new product</router-link>
         <hr>
         <h5 class="text-warning">Shopping History:</h5>
         <ul>
