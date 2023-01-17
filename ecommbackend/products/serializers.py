@@ -16,7 +16,8 @@ class ProductSerializer(serializers.ModelSerializer):
     #     return rep
 
 class CategorySerializer(serializers.ModelSerializer):
-    products = serializers.SlugRelatedField(many=True,queryset=Product.objects.all(),slug_field='title')
+    products = ProductSerializer(many=True)
     class Meta:
         model= Category
-        fields = ('title','slug','products')
+        fields = ('title','products','id')
+        read_only_fields = ['id',]
