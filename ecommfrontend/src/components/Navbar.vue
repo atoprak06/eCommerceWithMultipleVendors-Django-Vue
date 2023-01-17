@@ -7,12 +7,16 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <router-link class="nav-link" :to="{name:'categories'}">Categories</router-link>
-                    </li>
-                    <li class="nav-item">
-                        <router-link class="nav-link" :to="{name:'vendors'}">Vendors</router-link>
-                    </li>
+                    <li class="nav-item dropdown">
+                         <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Categories
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li v-for="category in categories" :key="category.id">
+                                <router-link class="dropdown-item" :to="{name:'categories',params:{title:category.title,id:category.id}}">{{category.title}}</router-link>
+                            </li>                        
+                        </ul>
+                    </li> 
                     <li class="nav-item">
                         <router-link class="nav-link" :to="{name:'about'}">About</router-link>
                     </li>
@@ -56,17 +60,27 @@
 
 <script>
 import {useTokenStore} from '../stores/TokensStore'
+import axios from 'axios'
 export default {
     name:'Navbar',
     setup(){
         const tokenStore = useTokenStore()        
        return {tokenStore}         
     },
+    data(){
+        return {
+            categories:[]
+        }
+    },
     methods:{
         logout(){            
             this.tokenStore.removeToken
             window.location.reload()
         }
-    }  
+    },
+    created(){
+        axios.get('api/categories')
+            .then(response=>this.categories=response.data)
+    }
 }
 </script>
