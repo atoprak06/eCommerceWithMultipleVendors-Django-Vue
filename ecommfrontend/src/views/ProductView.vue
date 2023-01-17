@@ -1,11 +1,11 @@
 <template>
-    <div class="product row d-flex justify-content-center pt-3 ">       
+    <div class="product row d-flex justify-content-center pt-3 mx-auto mb-5 " style="max-width:40rem">       
         <div class="col-12 mt-5 d-flex justify-content-center align-items-center ">    
             <div class="card p-3" style="min-width:30rem">                
                 <div class="d-flex justify-content-between align-items-center row ">
                     <div class="col-6">                        
                         <h5 class="text-uppercase mb-0">{{product.title}}</h5>
-                        <p class="main-heading mt-0">added by <span class="text-success">{{product.created_by}}</span></p>
+                        <p class="main-heading mt-2">added by <router-link :to="{name:'vendors',params:{username:product.created_by}}" class="text-success">{{product.created_by}}</router-link>, <span class="text-danger">{{getTime(product.created_at)}}</span></p>
                         <p class="text-danger">${{product.price}}</p>                        
                         <small class="text-uppercase bg-dark text-white rounded-3 p-1">{{product.category}}</small>
                     </div>
@@ -13,11 +13,12 @@
                         <img src="../assets/logo.png" style="width:100%; height:auto;">
                     </div>
                 </div>                               
-                <p>{{product.description}} </p>                
+                <p class="col-6">{{product.description}} </p>                
                 <button class="btn btn-danger">Add to cart</button>
             </div>            
         </div>
         <form @submit.prevent="submit" v-if="tokenStore.user.username===product.created_by" class="d-flex flex-column col-6 justify-content-center m-3">
+                <h3 class="text-warning">Edit your Product</h3>
                 <div class="mb-3">
                     <label for="product_name" class="form-label text-white">Title:</label>
                     <input v-model="product.title" type="text" class="form-control" id="product_name">                    
@@ -53,6 +54,7 @@
 <script>
 import axios from 'axios'
 import {useTokenStore} from '../stores/TokensStore'
+import moment from 'moment'
 export default {
     data(){
         return {
@@ -71,12 +73,11 @@ export default {
     },
     methods:{
         submit(){
-            axios.patch(`api/products/${ this.$route.params.id }/`,this.product)
-                .then(response=>{
-                    console.log(response)
-                })
+            axios.patch(`api/products/${ this.$route.params.id }/`,this.product)              
+        },
+        getTime(created_at){
+            return moment(created_at).fromNow()
         }
-
     }
 }
 </script>
