@@ -27,6 +27,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES':(
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ),
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
 }
 
 # Application definition
@@ -43,7 +44,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'djoser',
     'user',
-    'products'
+    'products',
+    'django_filters'
 
 ]
 
@@ -61,8 +63,8 @@ MIDDLEWARE = [
 
 DJOSER = {    
     'SERIALIZERS': {
-         'user' : 'user.serializers.UserShowSerializer',
-         'current_user' :'user.serializers.UserShowSerializer',         
+         'user' : 'user.serializers.UserShowSerializerEdit',
+         'current_user' :'user.serializers.UserShowSerializerEdit',         
          'user_create_password_retype': 'user.serializers.UserRegistrationSerializer',
     },
     'USER_CREATE_PASSWORD_RETYPE':True,
