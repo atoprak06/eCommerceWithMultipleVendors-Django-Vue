@@ -11,8 +11,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         fake = Faker()
         choices_list = ['active','deactive']     
-        for _ in range(2):
-            title=fake.name(),            
+        for _ in range(500):
+            title=str(fake.name()).strip('(),')                       
             Product.objects.create(
                 category=random.choice(Category.objects.all()),
                 created_by=random.choice(UserProfile.objects.all()),
