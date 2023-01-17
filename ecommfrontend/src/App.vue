@@ -1,7 +1,7 @@
 <template>
   <div class="app bg-dark d-flex flex-column mx-auto" style="min-height:100vh">
-    <Navbar/>  
-    <router-view/>
+    <Navbar @search="search"/>  
+    <router-view :searchQuery="searchQuery"/>
     <Footer class=" mt-auto"/>
   </div>
 </template>
@@ -18,7 +18,15 @@ export default {
     Footer
   },
   data(){
-    return{errors:[]}
+    return{
+      errors:[],
+      searchQuery:''
+    }
+  },
+  methods:{
+    search(searchQuery){
+      this.searchQuery=searchQuery
+    }
   },
   setup(){    
     const tokenStore = useTokenStore()    
