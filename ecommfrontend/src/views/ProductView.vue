@@ -10,7 +10,7 @@
                         <small class="text-uppercase bg-dark text-white rounded-3 p-1">{{product.category}}</small>
                     </div>
                     <div class="image col-6">
-                        <img src="../assets/logo.png" style="width:100%; height:auto;">
+                        <img :src="product.image_url" style="width:100%; max-height:18rem; object-fit:contain; height:auto;">
                     </div>
                 </div>                               
                 <p class="col-6">{{product.description}} </p>                
