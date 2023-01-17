@@ -1,7 +1,7 @@
 <template>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-            <router-link class="navbar-brand" to="/">Ecommerce</router-link>
+            <a class="navbar-brand" href="/">Ecommerce</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
             </button>
@@ -24,9 +24,8 @@
                         <router-link class="nav-link" :to="{name:'contact'}">Contact Us</router-link>
                     </li>             
                 </ul>
-                <form class="d-flex">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
+                <form @keyup.prevent="$emit('search',searchQuery)" class="d-flex">
+                    <input @keydown.enter.prevent @click.prevent class="form-control me-2" type="text" v-model="searchQuery" placeholder="Search" aria-label="Search">
                 </form>
                 <ul v-if="!tokenStore.isAuthenticated" class="navbar-nav ms-auto my-2 mb-lg-0">
                     <li class="nav-item">
@@ -69,7 +68,8 @@ export default {
     },
     data(){
         return {
-            categories:[]
+            categories:[],
+            searchQuery:''
         }
     },
     methods:{
