@@ -21,9 +21,40 @@ export default {
   components: { 
     Product   
   },
+  props:{
+    searchQuery:'',
+  },
   data(){
     return {
       products:[]
+    }
+  },
+  watch:{
+    searchQuery:{
+      handler:function(){
+        if(this.searchQuery === ''){
+          this.getProducts()
+        }
+        else{
+         this.products = this.products.filter(this.checkQuery)
+        }        
+      }
+    }
+  },
+  methods:{
+    checkQuery(product){
+      if (product.title.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+       product.created_by.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+       product.category.toLowerCase().includes(this.searchQuery.toLowerCase()) ){
+        return product
+      }      
+    },
+    getProducts(){
+      axios 
+        .get('api/products')
+        .then(response=>{
+          this.products=response.data
+        })
     }
   },
   created(){
