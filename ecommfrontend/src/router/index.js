@@ -47,12 +47,12 @@ const routes = [
     component: ContactView
   },
   {
-    path: '/vendors',
+    path: '/vendors/:username?',
     name: 'vendors',
     component: VendorsView
   },
   {
-    path: '/categories',
+    path: '/categories/:title/:id',
     name: 'categories',
     component: CategoriesView
   },
