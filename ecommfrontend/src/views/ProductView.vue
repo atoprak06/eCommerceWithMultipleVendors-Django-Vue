@@ -1,7 +1,7 @@
 <template>
-    <div class="product row d-flex justify-content-center pt-3 mx-auto mb-5 " style="max-width:40rem">       
+    <div class="product row d-flex justify-content-center pt-3 mx-auto mb-5" style="max-width:40rem; width:100%; height:auto">       
         <div class="col-12 mt-5 d-flex justify-content-center align-items-center ">    
-            <div class="card p-3" style="min-width:30rem">                
+            <div class="card p-3" style="width:100%; height:auto">                
                 <div class="d-flex justify-content-between align-items-center row ">
                     <div class="col-6">                        
                         <h5 class="text-uppercase mb-0">{{product.title}}</h5>

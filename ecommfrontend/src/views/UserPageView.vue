@@ -1,5 +1,5 @@
 <template>
-    <div class="user-page container mt-5">        
+    <div class="user-page table-responsive container mt-5">        
         <h5 class="text-warning">My Products:</h5>
         <table class="table table-hover">
             <thead class="table-dark">

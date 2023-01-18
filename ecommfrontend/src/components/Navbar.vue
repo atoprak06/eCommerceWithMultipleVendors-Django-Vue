@@ -45,12 +45,13 @@
                     <li>
                         <button @click.prevent="logout" class="btn btn-danger">logout</button>
                     </li>
+                    <router-link :to="{name:'cart'}" class="mt-3 me-3">                    
+                        <i class="fa-solid fa-cart-shopping text-white fs-3 ms-3 position-relative">
+                            <span style="margin-left:-5px; margin-top:-12px" class=" rounded-circle bg-danger position-absolute small p-1 fs-6">2</span>
+                        </i>
+                    </router-link>
                 </ul>
-                <router-link to="cart">                    
-                    <i class="fa-solid fa-cart-shopping text-white fs-3 ms-3 position-relative">
-                        <span style="margin-left:-5px; margin-top:-12px" class=" rounded-circle bg-danger position-absolute small p-1 fs-6">2</span>
-                    </i>
-                </router-link>
+              
 
             </div>
         </div>
