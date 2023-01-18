@@ -26,14 +26,15 @@ export default {
   },
   data(){
     return {
-      products:[]
+      products:[],
+      productsHolder:[]
     }
   },
   watch:{
     searchQuery:{
       handler:function(){
         if(this.searchQuery === ''){
-          this.getProducts()
+          this.products = this.productsHolder
         }
         else{
          this.products = this.products.filter(this.checkQuery)
@@ -48,13 +49,6 @@ export default {
        product.category.toLowerCase().includes(this.searchQuery.toLowerCase()) ){
         return product
       }      
-    },
-    getProducts(){
-      axios 
-        .get('api/products')
-        .then(response=>{
-          this.products=response.data
-        })
     }
   },
   created(){
@@ -62,6 +56,7 @@ export default {
         .get('api/products')
         .then(response=>{
           this.products=response.data
+          this.productsHolder=this.products
         })
   }
 

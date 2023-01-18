@@ -12,7 +12,8 @@ import Product from '../components/Product.vue'
 export default {
 data(){
   return {
-    products:[], 
+    products:[],
+    productsHolder:[]
   }
 },
 props:{
@@ -24,6 +25,7 @@ watch:{
       axios.get(`api/categories/${id}/`)
         .then(response=>{
           this.products=response.data.products
+          this.productsHolder=this.products
         })
     },
     deep:true,
@@ -32,7 +34,7 @@ watch:{
   searchQuery:{
       handler:function(){
         if(this.searchQuery === ''){
-          this.getProducts()
+          this.products=this.productsHolder
         }
         else{
          this.products = this.products.filter(this.checkQuery)
@@ -47,13 +49,7 @@ methods:{
        product.category.toLowerCase().includes(this.searchQuery.toLowerCase()) ){
         return product
       }      
-    },
-  getProducts(){
-      axios.get(`api/categories/${this.$route.params.id}/`)
-        .then(response=>{
-          this.products=response.data.products
-        })
-  }
+    }
 },
 components:{Product},
 }  
