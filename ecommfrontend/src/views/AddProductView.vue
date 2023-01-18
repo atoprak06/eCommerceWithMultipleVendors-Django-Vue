@@ -46,13 +46,9 @@ export default {
     },
     methods:{
         submit(){
-            axios.post('api/products/',this.product)
-                .then(response=>{
-                    console.log(response)
-                })                
+            axios.post('api/products/',this.product)                            
         }
-    }
-    
+    }    
 }
 
 </script>
