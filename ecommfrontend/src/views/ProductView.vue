@@ -14,7 +14,7 @@
                     </div>
                 </div>                               
                 <p class="col-6">{{product.description}} </p>                
-                <button class="btn btn-danger">Add to cart</button>
+                <button @click.prevent="cartStore.addToCart(product)" class="btn btn-danger">Add to cart</button>              
             </div>            
         </div>
         <form @submit.prevent="submit" v-if="tokenStore.user.username===product.created_by" class="d-flex flex-column col-6 justify-content-center m-3">
@@ -54,6 +54,8 @@
 <script>
 import axios from 'axios'
 import {useTokenStore} from '../stores/TokensStore'
+import {useCartStore} from '../stores/CartStore'
+
 import moment from 'moment'
 export default {
     data(){
@@ -63,7 +65,8 @@ export default {
     },
     setup(){
         const tokenStore = useTokenStore()
-        return {tokenStore}
+        const cartStore = useCartStore()
+        return {tokenStore,cartStore}
     },
     mounted(){
         axios.get(`api/products/${ this.$route.params.id }`)
