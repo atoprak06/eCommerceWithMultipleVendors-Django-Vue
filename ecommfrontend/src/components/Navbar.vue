@@ -44,28 +44,29 @@
                     </li>
                     <li>
                         <button @click.prevent="logout" class="btn btn-danger">logout</button>
-                    </li>
-                    <router-link :to="{name:'cart'}" class="mt-3 me-3">                    
-                        <i class="fa-solid fa-cart-shopping text-white fs-3 ms-3 position-relative">
-                            <span style="margin-left:-5px; margin-top:-12px" class=" rounded-circle bg-danger position-absolute small p-1 fs-6">2</span>
-                        </i>
-                    </router-link>
+                    </li>                 
                 </ul>
-              
-
+                <router-link :to="{name:'cart'}" class="mt-3 me-3">                    
+                    <i class="fa-solid fa-cart-shopping text-white fs-3 ms-3 position-relative">
+                        <span style="margin-left:-5px; margin-top:-12px" class=" rounded-circle bg-danger position-absolute small p-1 fs-6">{{cartStore.getCartTotal}}</span>
+                    </i>
+                </router-link>
             </div>
         </div>
     </nav>
 </template>
 
 <script>
-import {useTokenStore} from '../stores/TokensStore'
+import { useTokenStore } from '../stores/TokensStore'
+import { useCartStore } from '../stores/CartStore'
 import axios from 'axios'
 export default {
     name:'Navbar',
     setup(){
-        const tokenStore = useTokenStore()        
-       return {tokenStore}         
+        const tokenStore = useTokenStore()
+        const cartStore = useCartStore()         
+        cartStore.initializeCart 
+       return {tokenStore,cartStore}         
     },
     data(){
         return {
