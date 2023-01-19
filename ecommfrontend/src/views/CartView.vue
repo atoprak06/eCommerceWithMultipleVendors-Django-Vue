@@ -45,7 +45,7 @@
                             <h6 class="mb-0">${{product.priceTotal}}</h6>
                           </div>
                           <div class="col-md-1 col-lg-1 col-xl-1 text-end">
-                            <a href="#!" class="text-muted"><i class="fas fa-times"></i></a>
+                            <i @click.prevent="cartStore.deleteProduct(product)" class="fas fa-times"></i>
                           </div>
                         </div>
                         <hr class="my-4">
@@ -121,3 +121,10 @@ export default {
   
 }
 </script>
+
+<style scoped>
+  .fas{
+    cursor: pointer;
+    
+  }
+</style>
