@@ -46,6 +46,11 @@ export const useCartStore = defineStore('cart',{
             let index = this.cart.findIndex(prId => {return prId.id === product.id})
             this.cart[index].priceTotal=this.cart[index].quantity * parseFloat(this.cart[index].price)
             localStorage.setItem('cart',JSON.stringify(this.cart))
+        },
+        deleteProduct(product){
+            let index = this.cart.findIndex(prId => {return prId.id === product.id})
+            this.cart.splice(index,1)
+            localStorage.setItem('cart',JSON.stringify(this.cart))            
         }
     }
 })
