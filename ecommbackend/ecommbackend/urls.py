@@ -6,6 +6,6 @@ urlpatterns = [
     path('api/',include('rest_framework.urls')),
     path('api/',include('djoser.urls')),
     path('api/',include('djoser.urls.authtoken')),
-    path('api/',include('products.urls'))
-
+    path('api/',include('products.urls')),
+    path('api/',include('order.urls'))
 ]

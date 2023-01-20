@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'djoser',
     'user',
     'products',
-    'django_filters'
+    'django_filters',
+    'order'
 
 ]
 
