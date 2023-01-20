@@ -3,7 +3,7 @@ from user.models import UserProfile
 from products.models import Product
 
 class Order(models.Model):
-    customer=models.ForeignKey(UserProfile,on_delete=models.DO_NOTHING)
+    customer=models.ForeignKey(UserProfile,on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     orderTotalPrice=models.FloatField(null=True,blank=False)
 
@@ -11,8 +11,8 @@ class Order(models.Model):
         return f'{self.customer.username} - {str(self.created_at)}'
 
 class OrderItem(models.Model):
-    order=models.ForeignKey(Order,on_delete=models.DO_NOTHING)
-    product=models.ForeignKey(Product,on_delete=models.DO_NOTHING)
+    order=models.ForeignKey(Order,on_delete=models.CASCADE,related_name='products')
+    product=models.ForeignKey(Product,on_delete=models.CASCADE)
     created_at=models.DateTimeField(auto_now_add=True)
     quantity=models.PositiveIntegerField()
     productTotalPrice=models.FloatField()

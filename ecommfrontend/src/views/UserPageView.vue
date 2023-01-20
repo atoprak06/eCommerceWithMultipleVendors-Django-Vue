@@ -27,23 +27,43 @@
         <router-link class="btn btn-danger" :to="{name:'newproduct'}">Add new product</router-link>
         <hr>
         <h5 class="text-warning">Shopping History:</h5>
-        <ul>
-            <li class="d-flex justify-content-between mt-3">
-                <p class="text-white">Product 1 is orderder by SomeUserName</p>
-                <p class="text-white">8 hours ago</p>
-            </li>
-            <hr class="text-white m-0">
-            <li class="d-flex justify-content-between mt-3">
-                <p class="text-white">Product 2 is orderder by SomeUserName</p>
-                <p class="text-white">12 hours ago</p>
-            </li>
-            <hr class="text-white m-0">
-            <li class="d-flex justify-content-between mt-3">
-                <p class="text-white">Product 3 is orderder by SomeUserName</p>
-                <p class="text-white">23 hours ago</p>
-            </li>
-            <hr class="text-white m-0">
-        </ul>
+        <table class="table table-hower">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">Order id</th>
+                    <th scope="col">Date Ordered</th>
+                    <th scope="col">Total</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody class="table-dark">
+                <tr v-for="order in myOrders" :key="order">
+                    <td>{{order.id}}</td>
+                    <td>{{getTime(order.created_at)}}</td>
+                    <td>${{order.orderTotalPrice}}</td>
+                    <td><button class="btn btn-primary">Details</button></td>
+                </tr>
+            </tbody>
+        </table>
+        <h5 class="text-warning">Sold Products:</h5>
+        <table class="table table-hower">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">Order id</th>
+                    <th scope="col">Date Ordered</th>
+                    <th scope="col">Total</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody class="table-dark">
+                <tr v-for="order in myOrders" :key="order">
+                    <td>{{order.id}}</td>
+                    <td>{{getTime(order.created_at)}}</td>
+                    <td>${{order.orderTotalPrice}}</td>
+                    <td><button class="btn btn-primary">Details</button></td>
+                </tr>
+            </tbody>
+        </table>
         <h5 class="text-success text-end">My Balance: $1244.66</h5>
     </div>
 </template>
@@ -55,7 +75,9 @@ export default {
     name:'UserPageView',
     data(){
         return {
-            userProducts:[]
+            userProducts:[],
+            myOrders:[],
+            soldProducts:[]
         }
     },
     methods:{
@@ -67,6 +89,14 @@ export default {
         axios.get('api/products/my_products')
              .then(response=>{                
                 this.userProducts=response.data
+             })
+        axios.get('api/order')
+             .then(response=>{
+                this.myOrders = response.data
+             })
+        axios.get('api/order/orderedProducts/')
+             .then(response=>{
+                console.log(response.data)
              })
     }
 }

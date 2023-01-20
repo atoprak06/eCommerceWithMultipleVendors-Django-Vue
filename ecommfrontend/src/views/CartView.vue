@@ -96,7 +96,7 @@
                         <h5 class="text-uppercase">Total price</h5>
                         <h5>$ {{cartStore.getCartPriceTotal}}</h5>
                       </div>
-                      <button type="button" class="btn btn-dark btn-block btn-lg"
+                      <button @click.prevent="buy" type="button" class="btn btn-dark btn-block btn-lg"
                         data-mdb-ripple-color="dark">Buy</button>
                     </div>
                   </div>
@@ -113,10 +113,33 @@
 
 <script>
 import {useCartStore} from '../stores/CartStore'
+import {useTokenStore} from '../stores/TokensStore'
+
+import axios from 'axios'
 export default {
   setup(){
     const cartStore = useCartStore()
-    return {cartStore}
+    const tokenStore = useTokenStore()
+
+    return {cartStore , tokenStore}
+  },
+  data(){
+    return{
+      order :{}
+    }
+  },
+  methods:{
+    buy(){
+      if (this.cartStore.cart.length>0){
+        let data = {customer:this.tokenStore.user,orderTotalPrice:this.cartStore.getCartPriceTotal,cartProducts:this.cartStore.cart}      
+        axios.post('api/order/',data)
+              .then(response=>{
+                this.cartStore.removeCart
+                console.log(response.data)              
+                })
+      }
+      else{console.log('add product first')}     
+    }
   }
   
 }

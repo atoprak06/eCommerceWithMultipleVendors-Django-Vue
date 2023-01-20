@@ -26,7 +26,7 @@ class Product(models.Model):
     description = models.TextField(max_length=255,null=True,blank=True)
     product_state_choices = (('active','Active'),('deactive','Deactive'))
     product_state = models.CharField(max_length=40,choices=product_state_choices,default='active')
-    image_url = models.CharField(max_length=255,default=fake.image_url())
+    image_url = models.CharField(max_length=255,default="https://placekitten.com/455/183")
 
     class Meta:
         ordering = ['-created_at']

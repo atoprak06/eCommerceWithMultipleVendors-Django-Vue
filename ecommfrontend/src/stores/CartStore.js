@@ -17,7 +17,11 @@ export const useCartStore = defineStore('cart',{
         },
         getCartPriceTotal(state){
            return (state.cart.reduce((n, {priceTotal}) => n + priceTotal, 0)).toFixed(2)
-        },        
+        },
+        removeCart(state){
+            state.cart=[]
+            localStorage.setItem('cart',JSON.stringify(state.cart))
+        }   
     },
     actions:{
         addToCart(product){                      
@@ -51,6 +55,6 @@ export const useCartStore = defineStore('cart',{
             let index = this.cart.findIndex(prId => {return prId.id === product.id})
             this.cart.splice(index,1)
             localStorage.setItem('cart',JSON.stringify(this.cart))            
-        }
+        }        
     }
 })
