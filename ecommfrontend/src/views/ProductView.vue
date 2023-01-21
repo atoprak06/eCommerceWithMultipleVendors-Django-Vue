@@ -14,7 +14,7 @@
                     </div>
                 </div>                               
                 <p class="col-6">{{product.description}} </p>                
-                <button @click.prevent="cartStore.addToCart(product)" class="btn btn-danger">Add to cart</button>              
+                <button @click.prevent="cartStore.addToCart(product); messageStore.showMessage('Added to Cart')" class="btn btn-danger">Add to cart</button>              
             </div>            
         </div>
         <form @submit.prevent="submit" v-if="tokenStore.user.username===product.created_by" class="d-flex flex-column col-6 justify-content-center m-3">
@@ -46,7 +46,7 @@
 
                     </select>                    
                 </div>                                           
-            <button type="submit" class="btn btn-primary">Edit</button>            
+            <button type="submit" class="btn btn-primary" @click.prevent="messageStore.showMessage('Product Edited')">Edit</button>            
         </form>   
     </div>
 </template>
@@ -55,6 +55,7 @@
 import axios from 'axios'
 import {useTokenStore} from '../stores/TokensStore'
 import {useCartStore} from '../stores/CartStore'
+import {useMessageStore} from '../stores/messageStore'
 
 import moment from 'moment'
 export default {
@@ -66,7 +67,8 @@ export default {
     setup(){
         const tokenStore = useTokenStore()
         const cartStore = useCartStore()
-        return {tokenStore,cartStore}
+        const messageStore = useMessageStore()
+        return {tokenStore,cartStore,messageStore}
     },
     mounted(){
         axios.get(`api/products/${ this.$route.params.id }`)

@@ -34,7 +34,7 @@
                             </button>
 
                             <input id="form1" min="0" name="quantity" :value="product.quantity" type="number"
-                              class="form-control form-control-sm" />
+                              class="form-control form-control-sm" style="min-width:4rem"/>
 
                             <button class="btn btn-link px-2"
                               @click.prevent="cartStore.addToCart(product)">
@@ -116,12 +116,14 @@ import {useCartStore} from '../stores/CartStore'
 import {useTokenStore} from '../stores/TokensStore'
 
 import axios from 'axios'
+import { useMessageStore } from '../stores/messageStore'
 export default {
   setup(){
     const cartStore = useCartStore()
     const tokenStore = useTokenStore()
+    const messageStore = useMessageStore()
 
-    return {cartStore , tokenStore}
+    return {cartStore , tokenStore,messageStore}
   },
   data(){
     return{
@@ -129,14 +131,15 @@ export default {
     }
   },
   methods:{
-    buy(){
+    async buy(){
       if (this.cartStore.cart.length>0){
         let data = {customer:this.tokenStore.user,orderTotalPrice:this.cartStore.getCartPriceTotal,cartProducts:this.cartStore.cart}      
-        axios.post('api/order/',data)
+        await axios.post('api/order/',data)
               .then(response=>{
                 this.cartStore.removeCart
                 console.log(response.data)              
                 })
+              .then(this.messageStore.showMessage('Order Completed'))
       }
       else{console.log('add product first')}     
     }

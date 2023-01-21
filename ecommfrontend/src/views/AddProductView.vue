@@ -38,15 +38,22 @@
 
 <script>
 import axios from 'axios'
+import {useMessageStore} from '../stores/messageStore'
 export default {
+    setup(){
+        const messageStore = useMessageStore()
+        return {messageStore}
+    },
     data(){
         return {
             product : {}
         }
     },
     methods:{
-        submit(){
-            axios.post('api/products/',this.product)                            
+        async submit(){
+           await axios.post('api/products/',this.product)
+                .then(response=>{console.log(response)}) 
+                .then(this.messageStore.showMessage('New Product Added'))                          
         }
     }    
 }

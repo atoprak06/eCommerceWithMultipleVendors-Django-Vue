@@ -1,21 +1,25 @@
 <template>
   <div class="app bg-dark d-flex flex-column mx-auto" style="min-height:100vh">
-    <Navbar @search="search"/>  
+    <Navbar @search="search"/>
     <router-view :searchQuery="searchQuery"/>
-    <Footer class=" mt-auto"/>
+    <Message class="position-fixed row"/>
+    <Footer class="mt-auto"/>
   </div>
 </template>
 
 <script>
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
+import Message from './components/Message.vue'
+
 import { useTokenStore } from './stores/TokensStore'
 import axios from 'axios'
 
 export default {  
   components:{
     Navbar,
-    Footer
+    Footer,
+    Message
   },
   data(){
     return{

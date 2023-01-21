@@ -44,7 +44,7 @@
                 <label class="form-check-label text-white" for="rememerme">Vendor Status</label>
             </div>                                   
             <div class="d-flex justify-content-end">
-                <button @click.prevent='submit' type="submit" class="btn btn-primary">Edit</button>
+                <button @click.prevent="submit;messageStore.showMessage('Profile Edited')" type="submit" class="btn btn-primary">Edit</button>
             </div>            
         </form>
     </div>
@@ -53,11 +53,14 @@
 
 <script>
 import {useTokenStore} from '../stores/TokensStore'
+import {useMessageStore} from '../stores/messageStore'
+
 import axios from 'axios'
 export default {
     setup(){
         const tokenStore = useTokenStore()        
-        return {tokenStore}
+        const messageStore = useMessageStore()
+        return {tokenStore,messageStore}
     },
     data(){
         return{
