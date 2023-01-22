@@ -12,9 +12,6 @@ import ProductView from '../views/ProductView'
 import AddProductView from '../views/AddProductView'
 
 
-
-
-
 const routes = [
   {
     path: '/',
@@ -81,6 +78,29 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
+})
+
+import { useTokenStore } from '@/stores/TokensStore'
+import { useToast } from "vue-toastification"
+
+
+router.beforeEach(async (to, from) => {
+  const tokenStore = useTokenStore()
+  const toast = useToast()
+  if (
+    // make sure the user is authenticated
+    !tokenStore.isAuthenticated &&
+    // ❗️ Avoid an infinite redirect
+    (to.name === 'userpage' || 
+    to.name === 'newproduct' ||
+    to.name === 'editprofile'
+    )
+
+  ) {
+    // redirect the user to the login page
+    toast.warning('Sign in first')
+    return { name: 'signin' }
+  }
 })
 
 export default router
