@@ -13,7 +13,8 @@
     "moment": "^2.29.4",
     "pinia": "^2.0.28",
     "vue": "^3.2.13",
-    "vue-router": "^4.0.3"
+    "vue-router": "^4.0.3",
+    "vue-toastification": "^2.0.0-rc.5"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~5.0.0",

@@ -38,11 +38,25 @@
 
 <script>
 import axios from 'axios'
-import {useMessageStore} from '../stores/messageStore'
+import { useToast } from "vue-toastification"
 export default {
-    setup(){
-        const messageStore = useMessageStore()
-        return {messageStore}
+    setup(){        
+        const options = {
+            position: "top-center",
+            timeout: 5000,
+            closeOnClick: true,
+            pauseOnFocusLoss: true,
+            pauseOnHover: true,
+            draggable: true,
+            draggablePercent: 0.6,
+            showCloseButtonOnHover: false,
+            hideProgressBar: true,
+            closeButton: "button",
+            icon: true,
+            rtl: false
+        }       
+    const toast = useToast() 
+    return {options,toast}
     },
     data(){
         return {
@@ -52,8 +66,27 @@ export default {
     methods:{
         async submit(){
            await axios.post('api/products/',this.product)
-                .then(response=>{console.log(response)}) 
-                .then(this.messageStore.showMessage('New Product Added'))                          
+                .then(response=>{
+                    if (response.status === 201){                        
+                        this.toast.success('New Product Added',this.options)
+                    } 
+                }) 
+                .catch(error=> {
+                    if (error.response) { 
+                        // The request was made and the server responded with a status code
+                        // that falls out of the range of 2xx                  
+                        let errorType = `${error.response.status}  ${error.response.statusText}`
+                        this.toast.error(errorType,this.options)                       
+                    } else if (error.request) { 
+                        // The request was made but no response was received
+                        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+                        // http.ClientRequest in node.js                   
+                        this.toast.error(error.request,this.options);                    
+                    } else {                       
+                        // Something happened in setting up the request that triggered an Error
+                        this.toast.error(error.message,this.options);
+                    }                   
+                });                           
         }
     }    
 }

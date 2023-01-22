@@ -44,7 +44,7 @@
                 <label class="form-check-label text-white" for="rememerme">Vendor Status</label>
             </div>                                   
             <div class="d-flex justify-content-end">
-                <button @click.prevent="submit;messageStore.showMessage('Profile Edited')" type="submit" class="btn btn-primary">Edit</button>
+                <button @click.prevent="submit" type="submit" class="btn btn-primary">Edit</button>
             </div>            
         </form>
     </div>
@@ -53,42 +53,53 @@
 
 <script>
 import {useTokenStore} from '../stores/TokensStore'
-import {useMessageStore} from '../stores/messageStore'
-
+import { useToast } from "vue-toastification"
 import axios from 'axios'
 export default {
     setup(){
         const tokenStore = useTokenStore()        
-        const messageStore = useMessageStore()
-        return {tokenStore,messageStore}
-    },
-    data(){
-        return{
-            errors:[],            
-        }
-    },
+        const options = {
+                position: "top-center",
+                timeout: 5000,
+                closeOnClick: true,
+                pauseOnFocusLoss: true,
+                pauseOnHover: true,
+                draggable: true,
+                draggablePercent: 0.6,
+                showCloseButtonOnHover: false,
+                hideProgressBar: true,
+                closeButton: "button",
+                icon: true,
+                rtl: false
+                }       
+        const toast = useToast()       
+        return {tokenStore,options,toast}
+    },   
     methods:{
         submit(){                                  
             axios
-                .patch('api/users/me/',this.tokenStore.user)                
+                .patch('api/users/me/',this.tokenStore.user)
+                .then(response=>{
+                    if (response.status === 200){
+                        this.toast.success('Profile Edited succesfully',this.options)
+                    }                 
+                })               
                 .catch(error=> {
-                    if (error.response) {
-                    // The request was made and the server responded with a status code
-                    // that falls out of the range of 2xx
-                        for(const property in error.response.data){
-                            this.errors.push(`${property}:${error.response.data[property]}`)
-                        }                                                                       
-                    } else if (error.request) {
-                    // The request was made but no response was received
-                    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-                    // http.ClientRequest in node.js
-                    console.log(error.request);                    
-                    } else {
-                    // Something happened in setting up the request that triggered an Error
-                    console.log('Error', error.message);
-                    }
-                    console.log(error.config);
-                });
+                    if (error.response) { 
+                        // The request was made and the server responded with a status code
+                        // that falls out of the range of 2xx                  
+                        let errorType = `${error.response.status}  ${error.response.statusText}`
+                        this.toast.error(errorType,this.options)                       
+                    } else if (error.request) { 
+                        // The request was made but no response was received
+                        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+                        // http.ClientRequest in node.js                   
+                        this.toast.error(error.request,this.options);                    
+                    } else {                       
+                        // Something happened in setting up the request that triggered an Error
+                        this.toast.error(error.message,this.options);
+                    }                   
+                });       
         }
     }  
 }

@@ -114,16 +114,28 @@
 <script>
 import {useCartStore} from '../stores/CartStore'
 import {useTokenStore} from '../stores/TokensStore'
-
+import { useToast } from "vue-toastification"
 import axios from 'axios'
-import { useMessageStore } from '../stores/messageStore'
 export default {
   setup(){
     const cartStore = useCartStore()
     const tokenStore = useTokenStore()
-    const messageStore = useMessageStore()
-
-    return {cartStore , tokenStore,messageStore}
+    const options = {
+      position: "top-center",
+      timeout: 5000,
+      closeOnClick: true,
+      pauseOnFocusLoss: true,
+      pauseOnHover: true,
+      draggable: true,
+      draggablePercent: 0.6,
+      showCloseButtonOnHover: false,
+      hideProgressBar: true,
+      closeButton: "button",
+      icon: true,
+      rtl: false
+    }       
+    const toast = useToast()
+    return {cartStore , tokenStore,options,toast}
   },
   data(){
     return{
@@ -136,21 +148,36 @@ export default {
         let data = {customer:this.tokenStore.user,orderTotalPrice:this.cartStore.getCartPriceTotal,cartProducts:this.cartStore.cart}      
         await axios.post('api/order/',data)
               .then(response=>{
-                this.cartStore.removeCart
-                console.log(response.data)              
+                if (response.status === 200){
+                  this.cartStore.removeCart
+                  this.toast.success('Order is success',this.options)
+                } 
                 })
-              .then(this.messageStore.showMessage('Order Completed'))
+              .catch(error=> {
+                if (error.response) { 
+                    // The request was made and the server responded with a status code
+                    // that falls out of the range of 2xx                  
+                    let errorType = `${error.response.status}  ${error.response.statusText}`
+                    this.toast.error(errorType,this.options)                       
+                } else if (error.request) { 
+                    // The request was made but no response was received
+                    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+                    // http.ClientRequest in node.js                   
+                    this.toast.error(error.request,this.options);                    
+                } else {                       
+                    // Something happened in setting up the request that triggered an Error
+                    this.toast.error(error.message,this.options);
+                }                   
+            });       
       }
-      else{console.log('add product first')}     
+      else{this.toast.warning('Add products first',this.options)}     
     }
-  }
-  
+  }  
 }
 </script>
 
 <style scoped>
   .fas{
-    cursor: pointer;
-    
+    cursor: pointer;    
   }
 </style>

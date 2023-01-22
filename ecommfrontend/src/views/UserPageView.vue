@@ -85,6 +85,8 @@
 import axios from 'axios'
 import moment from 'moment'
 import Order from '../components/Order.vue'
+import { useToast } from "vue-toastification"
+
 export default {
     name:'UserPageView',
     data(){
@@ -97,6 +99,24 @@ export default {
             ordersTotal : 0,
             productTotal : 0
         }
+    },
+    setup(){        
+        const options = {
+            position: "top-center",
+            timeout: 5000,
+            closeOnClick: true,
+            pauseOnFocusLoss: true,
+            pauseOnHover: true,
+            draggable: true,
+            draggablePercent: 0.6,
+            showCloseButtonOnHover: false,
+            hideProgressBar: true,
+            closeButton: "button",
+            icon: true,
+            rtl: false
+        }       
+    const toast = useToast() 
+    return {options,toast}
     },
     components:{
         Order
@@ -111,14 +131,62 @@ export default {
              .then(response=>{     
                 this.userProducts=response.data
              })
+             .catch(error=> {
+                    if (error.response) { 
+                        // The request was made and the server responded with a status code
+                        // that falls out of the range of 2xx                  
+                        let errorType = `${error.response.status}  ${error.response.statusText}`
+                        this.toast.error(errorType,this.options)                       
+                    } else if (error.request) { 
+                        // The request was made but no response was received
+                        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+                        // http.ClientRequest in node.js                   
+                        this.toast.error(error.request,this.options);                    
+                    } else {                       
+                        // Something happened in setting up the request that triggered an Error
+                        this.toast.error(error.message,this.options);
+                    }                   
+                });                   
         await axios.get('api/order')
              .then(response=>{
                 this.myOrders = response.data                
              })
+             .catch(error=> {
+                    if (error.response) { 
+                        // The request was made and the server responded with a status code
+                        // that falls out of the range of 2xx                  
+                        let errorType = `${error.response.status}  ${error.response.statusText}`
+                        this.toast.error(errorType,this.options)                       
+                    } else if (error.request) { 
+                        // The request was made but no response was received
+                        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+                        // http.ClientRequest in node.js                   
+                        this.toast.error(error.request,this.options);                    
+                    } else {                       
+                        // Something happened in setting up the request that triggered an Error
+                        this.toast.error(error.message,this.options);
+                    }                   
+                });                   
         await axios.get('api/order/orderedProducts/')
              .then(response=>{
                 this.soldProducts=response.data
              })
+             .catch(error=> {
+                    if (error.response) { 
+                        // The request was made and the server responded with a status code
+                        // that falls out of the range of 2xx                  
+                        let errorType = `${error.response.status}  ${error.response.statusText}`
+                        this.toast.error(errorType,this.options)                       
+                    } else if (error.request) { 
+                        // The request was made but no response was received
+                        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+                        // http.ClientRequest in node.js                   
+                        this.toast.error(error.request,this.options);                    
+                    } else {                       
+                        // Something happened in setting up the request that triggered an Error
+                        this.toast.error(error.message,this.options);
+                    }                   
+                });                   
         this.ordersTotal = 0
         this.productTotal = 0
         this.myOrders.forEach(order => {                              

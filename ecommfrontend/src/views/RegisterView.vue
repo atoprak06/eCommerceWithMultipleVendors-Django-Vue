@@ -46,13 +46,7 @@
                  <div class="mb-3">                    
                     <input type="checkbox" v-model="is_vendor" class="form-check-input" id="is_vendor">
                     <label for="is_vendor" class="form-label text-white ms-3">Are you vendor?</label>
-                </div>
-
-                <div v-if="errors">
-                    <div class="my-2 text-center "   v-for="error in errors" :key="error">
-                        <small class=" small text-white bg-danger p-1 rounded-1">{{error}}</small>
-                    </div>
-                </div>                
+                </div>             
                 <div class="mb-3 text-end">
                     <router-link to="sign-in" class="text-primary">Already have an account?</router-link>
                 </div>              
@@ -67,6 +61,8 @@
 
 <script>
 import axios from 'axios'
+import { useToast } from "vue-toastification"
+
 export default {
     name:'SignInView',
     data(){
@@ -81,13 +77,29 @@ export default {
             user_age:'',
             user_country: '',
             user_city: '',
-            user_address: '',
-            errors:[]
+            user_address: '',           
         }
     },
+    setup(){   
+        const options = {
+            position: "top-center",
+            timeout: 5000,
+            closeOnClick: true,
+            pauseOnFocusLoss: true,
+            pauseOnHover: true,
+            draggable: true,
+            draggablePercent: 0.6,
+            showCloseButtonOnHover: false,
+            hideProgressBar: true,
+            closeButton: "button",
+            icon: true,
+            rtl: false
+        }       
+        const toast = useToast()
+        return {options,toast}
+    },
     methods:{
-        submit(){
-            this.errors = []
+        submit(){            
             const user={
                 username :this.username,
                 email: this.email,
@@ -105,26 +117,29 @@ export default {
                 .post('api/users/',user)
                 .then(response=>{
                     console.log(response)
-                    this.$router.push('/sign-in')                    
+                    if(response.status===201){
+                        console.log(response)
+                        this.$router.push('/sign-in')
+                        this.toast.success('Registered successfully')
+                    }                                     
                 })
                 .catch(error=> {
-                    if (error.response) {
-                    // The request was made and the server responded with a status code
-                    // that falls out of the range of 2xx
-                        for(const property in error.response.data){
-                            this.errors.push(`${property}:${error.response.data[property]}`)
-                        }                                                
-                    } else if (error.request) {
-                    // The request was made but no response was received
-                    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-                    // http.ClientRequest in node.js
-                    console.log(error.request);                    
-                    } else {
-                    // Something happened in setting up the request that triggered an Error
-                    console.log('Error', error.message);
-                    }
-                    console.log(error.config);
-                });  
+                    if (error.response) { 
+                        // The request was made and the server responded with a status code
+                        // that falls out of the range of 2xx                  
+                        let errorType = `${error.response.status}  ${error.response.statusText}`
+                        this.toast.error(errorType,this.options)                       
+                    } else if (error.request) { 
+                        // The request was made but no response was received
+                        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+                        // http.ClientRequest in node.js                   
+                        this.toast.error(error.request,this.options);                    
+                    } else {                       
+                        // Something happened in setting up the request that triggered an Error
+                        this.toast.error(error.message,this.options);
+                    }                   
+                });      
+                
         }
     }
 }

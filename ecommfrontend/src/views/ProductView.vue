@@ -14,7 +14,7 @@
                     </div>
                 </div>                               
                 <p class="col-6">{{product.description}} </p>                
-                <button @click.prevent="cartStore.addToCart(product); messageStore.showMessage('Added to Cart')" class="btn btn-danger">Add to cart</button>              
+                <button @click.prevent="cartStore.addToCart(product);toast.success('Product Added to Cart',options)" class="btn btn-danger">Add to cart</button>              
             </div>            
         </div>
         <form @submit.prevent="submit" v-if="tokenStore.user.username===product.created_by" class="d-flex flex-column col-6 justify-content-center m-3">
@@ -46,7 +46,7 @@
 
                     </select>                    
                 </div>                                           
-            <button type="submit" class="btn btn-primary" @click.prevent="messageStore.showMessage('Product Edited')">Edit</button>            
+            <button type="submit" class="btn btn-primary">Edit</button>            
         </form>   
     </div>
 </template>
@@ -55,20 +55,34 @@
 import axios from 'axios'
 import {useTokenStore} from '../stores/TokensStore'
 import {useCartStore} from '../stores/CartStore'
-import {useMessageStore} from '../stores/messageStore'
+import { useToast } from "vue-toastification"
 
 import moment from 'moment'
 export default {
     data(){
         return {
-            product:{},            
+            product:{},           
         }
     },
     setup(){
         const tokenStore = useTokenStore()
         const cartStore = useCartStore()
-        const messageStore = useMessageStore()
-        return {tokenStore,cartStore,messageStore}
+        const options = {
+                position: "top-center",
+                timeout: 5000,
+                closeOnClick: true,
+                pauseOnFocusLoss: true,
+                pauseOnHover: true,
+                draggable: true,
+                draggablePercent: 0.6,
+                showCloseButtonOnHover: false,
+                hideProgressBar: true,
+                closeButton: "button",
+                icon: true,
+                rtl: false
+                }       
+        const toast = useToast()       
+        return {tokenStore,cartStore,toast,options}
     },
     mounted(){
         axios.get(`api/products/${ this.$route.params.id }`)
@@ -77,10 +91,31 @@ export default {
             })
     },
     methods:{
-        submit(){
-            axios.patch(`api/products/${ this.$route.params.id }/`,this.product)              
+       async submit(){
+            await axios.patch(`api/products/${ this.$route.params.id }/`,this.product)
+                .then(response=>{
+                    if (response.status === 200){
+                        this.toast.success('Product Edited succesfully',this.options)
+                    }                 
+                })
+                .catch(error=> {
+                    if (error.response) { 
+                        // The request was made and the server responded with a status code
+                        // that falls out of the range of 2xx                  
+                        let errorType = `${error.response.status}  ${error.response.statusText}`
+                        this.toast.error(errorType,this.options)                       
+                    } else if (error.request) { 
+                        // The request was made but no response was received
+                        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+                        // http.ClientRequest in node.js                   
+                        this.toast.error(error.request,this.options);                    
+                    } else {                       
+                        // Something happened in setting up the request that triggered an Error
+                        this.toast.error(error.message,this.options);
+                    }                   
+                });           
         },
-        getTime(created_at){
+        getTime(created_at){            
             return moment(created_at).fromNow()
         }
     }
