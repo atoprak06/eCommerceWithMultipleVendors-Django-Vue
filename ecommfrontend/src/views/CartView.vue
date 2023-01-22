@@ -145,30 +145,43 @@ export default {
   methods:{
     async buy(){
       if (this.cartStore.cart.length>0){
-        let data = {customer:this.tokenStore.user,orderTotalPrice:this.cartStore.getCartPriceTotal,cartProducts:this.cartStore.cart}      
-        await axios.post('api/order/',data)
-              .then(response=>{
-                if (response.status === 200){
-                  this.cartStore.removeCart
-                  this.toast.success('Order is success',this.options)
-                } 
-                })
-              .catch(error=> {
-                if (error.response) { 
-                    // The request was made and the server responded with a status code
-                    // that falls out of the range of 2xx                  
-                    let errorType = `${error.response.status}  ${error.response.statusText}`
-                    this.toast.error(errorType,this.options)                       
-                } else if (error.request) { 
-                    // The request was made but no response was received
-                    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-                    // http.ClientRequest in node.js                   
-                    this.toast.error(error.request,this.options);                    
-                } else {                       
-                    // Something happened in setting up the request that triggered an Error
-                    this.toast.error(error.message,this.options);
-                }                   
-            });       
+        if(this.tokenStore.isAuthenticated){ 
+          if((this.tokenStore.user.user_address!==(''&&'null'))
+          &&(this.tokenStore.user.user_country!==(''&&'null'))
+          &&(this.tokenStore.user.user_city!==(''&&'null'))){
+              let data = {customer:this.tokenStore.user,orderTotalPrice:this.cartStore.getCartPriceTotal,cartProducts:this.cartStore.cart}      
+              await axios.post('api/order/',data)
+                .then(response=>{
+                  if (response.status === 200){
+                    this.cartStore.removeCart
+                    this.toast.success('Order is success',this.options)
+                  } 
+                  })
+                .catch(error=> {
+                  if (error.response) { 
+                      // The request was made and the server responded with a status code
+                      // that falls out of the range of 2xx                  
+                      let errorType = `${error.response.status}  ${error.response.statusText}`
+                      this.toast.error(errorType,this.options)                       
+                  } else if (error.request) { 
+                      // The request was made but no response was received
+                      // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+                      // http.ClientRequest in node.js                   
+                      this.toast.error(error.request,this.options);                    
+                  } else {                       
+                      // Something happened in setting up the request that triggered an Error
+                      this.toast.error(error.message,this.options);
+                  }                   
+              });          
+          }else{
+            this.toast.warning('Enter your country,city and adress correctly')
+            this.$router.push({name:'editprofile'})
+          }        
+        }else{
+          this.toast.warning('Sign in first',this.options)
+          this.$router.push({name:'signin'})
+        }
+        
       }
       else{this.toast.warning('Add products first',this.options)}     
     }
