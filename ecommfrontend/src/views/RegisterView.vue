@@ -115,10 +115,8 @@ export default {
             }            
             axios
                 .post('api/users/',user)
-                .then(response=>{
-                    console.log(response)
-                    if(response.status===201){
-                        console.log(response)
+                .then(response=>{                    
+                    if(response.status===201){                        
                         this.$router.push('/sign-in')
                         this.toast.success('Registered successfully')
                     }                                     

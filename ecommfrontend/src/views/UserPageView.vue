@@ -4,7 +4,7 @@
             <h5 class="text-warning">My Products:</h5>
             <button class="btn" :class="[isActive?'btn-warning':'btn-success']" @click.prevent="isActive=!isActive"><small v-if="isActive">Hide Products</small><small v-else>Show Products</small></button>            
         </div>
-        <table class="table table-hover" :class="[isActive?'':'d-none']">
+        <table class="table table-hover" v-if="isActive">
             <thead class="table-dark">
                 <tr>
                     <th scope="col">Product id</th>

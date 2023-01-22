@@ -29,8 +29,7 @@ export const useCartStore = defineStore('cart',{
                 let index = this.cart.findIndex(prId => {return prId.id === product.id})                                        
                 this.cart[index].quantity += 1
                 localStorage.setItem('cart',JSON.stringify(this.cart))                       
-            }else{
-                console.log('y')
+            }else{                
                 product.quantity = 1
                 this.cart.push(product)
                 localStorage.setItem('cart',JSON.stringify(this.cart))              

@@ -1,7 +1,7 @@
 <template>
     <div>
         <button class="btn" :class="[isActiveModal?'btn-warning':'btn-success']" @click.prevent="isActiveModal=!isActiveModal"><small v-if="isActiveModal">Hide Details</small> <small v-else>Show Details</small></button>
-        <div class="order" :class="[isActiveModal?'d-flex flex-column':'d-none']">
+        <div class="order" v-if="isActiveModal">
             <table class="table table-hower">
                 <thead class="table-dark">
                     <tr>
