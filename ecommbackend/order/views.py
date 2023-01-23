@@ -9,6 +9,8 @@ from .models import Order,OrderItem
 # from user.serializers import UserShowSerializerVendor
 from django.db.models import Prefetch
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import pagination
+
 
 
 class OrderViewSet(viewsets.ModelViewSet):
@@ -32,6 +34,10 @@ class OrderViewSet(viewsets.ModelViewSet):
     def orderedProducts(self,request):
         queryset = OrderItem.objects.filter(product__created_by=self.request.user)
         serializer = OrderedItemSerializer(queryset,many=True)
+        paginator = pagination.PageNumberPagination()
+        page = paginator.paginate_queryset(serializer.data, request)
+        if page is not None:
+            return paginator.get_paginated_response(page)
         return Response(serializer.data)
 
 

@@ -100,7 +100,7 @@ export default {
         await axios.get('api/categories')
                     .then(response=>{
                         if (response.status===200){
-                            this.categories=response.data
+                            this.categories=response.data['results']
                         }                
                     })
                     .catch(error=> {

@@ -1,8 +1,23 @@
 <template>
-  <div class="vendors p-5 d-flex row">
-    <div v-for="product in vendor.products" :key="product" class="col-lg-3 col-md-4 my-3 col-sm-6">
-      <Product :product="product"/>
-    </div>   
+  <div class="vendors container-fluid d-flex align-items-center flex-column p-5">
+    <h3 class="text-warning">Products by {{this.$route.params.username}}</h3>
+    <div class="row d-flex">
+      <div v-for="product in products" :key="product" class="col-lg-3 col-md-4 my-3 col-sm-6">
+        <Product :product="product"/>
+      </div>
+    </div>
+    <Paginate
+        id="unit"
+        v-model = "page"
+        :page-count="pageCount"
+        :page-range="10"  
+        :margin-pages="3"
+        :initial-page="1"
+        :prev-class="'ignore'"
+        :next-class="'ignore'"
+        :disabled-class="'ignore'"
+        :click-handler="newPage"        
+    />       
   </div>
 </template>
 
@@ -11,11 +26,14 @@
 import axios from 'axios'
 import Product from '../components/Product.vue'
 import { useToast } from "vue-toastification"
+import Paginate from "vuejs-paginate-next";
+
 export default {
   data(){
     return {
-      vendor:{},
-      productsHolder:[]
+      products:[],
+      productsHolder:[],
+      pageCount:1,           
     }    
   },
   setup(){
@@ -37,59 +55,74 @@ export default {
     return {options,toast}
     },
   props:{searchQuery:''},
-  components:{Product},
+  components:{Product,Paginate},
   watch:{  
     '$route.params.username':{
-      handler: function(username){
-        axios.get(`api/vendors/?username=${username}`)
-            .then(response=>{ 
-              if (response.data[0]){             
-                this.vendor=response.data[0]
-                this.productsHolder=this.vendor.products  
-              }
-              else{
-                this.toast.error(`There is no ${username} called Vendor`)
-              }
-            })
-            .catch(error=> {
-                    if (error.response) { 
-                        // The request was made and the server responded with a status code
-                        // that falls out of the range of 2xx                  
-                        let errorType = `${error.response.status}  ${error.response.statusText}`
-                        this.toast.error(errorType,this.options)                       
-                    } else if (error.request) { 
-                        // The request was made but no response was received
-                        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-                        // http.ClientRequest in node.js                   
-                        this.toast.error(error.request,this.options);                    
-                    } else {                       
-                        // Something happened in setting up the request that triggered an Error
-                        this.toast.error(error.message,this.options);
-                    }                   
-                });               
+      handler:async function(){        
+         await this.newPage(1)
       },
       deep:true,
       immediate:true,   
     },    
     searchQuery:{
-      handler:function(){
-        if(this.searchQuery === ''){
-          this.vendor.products=this.productsHolder
-        }
-        else{            
-         this.vendor.products = this.vendor.products.filter(this.checkQuery)
-        }        
-      }
+      handler:async function(){
+          this.page=1
+           await axios.get(`api/products/?created_by__username=${this.$route.params.username}&product_state=active&title=${this.searchQuery}`)
+            .then(response=>{              
+              if (response.status === 200){
+                this.pageCount=Math.ceil(response.data['count']/16)
+                this.products=response.data.results                  
+              }         
+            })
+            .catch(error=> { 
+              if (error.response) { 
+                  // The request was made and the server responded with a status code
+                  // that falls out of the range of 2xx                  
+                  let errorType = `${error.response.status}  ${error.response.statusText}`
+                  this.toast.error(errorType,this.options)                       
+              } else if (error.request) { 
+                  // The request was made but no response was received
+                  // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+                  // http.ClientRequest in node.js                   
+                  this.toast.error(error.request,this.options);                    
+              } else {                       
+                  // Something happened in setting up the request that triggered an Error
+                  this.toast.error(error.message,this.options);
+              }                   
+          });    
+      } 
     }
   },
   methods:{
-    checkQuery(product){
-      if (product.title.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-       product.created_by.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-       product.category.toLowerCase().includes(this.searchQuery.toLowerCase()) ){
-        return product
-      }      
+    async newPage(selected){
+      await axios 
+        .get(`api/products/?created_by__username=${this.$route.params.username}&product_state=active&page=${selected}&title=${this.searchQuery}`)
+        .then(response=>{
+          console.log(response)
+          if (response.status === 200){
+            this.pageCount=Math.ceil(response.data['count']/16)
+            this.products=response.data.results
+            this.productsHolder=this.products
+          }         
+        })
+        .catch(error=> {
+          if (error.response) { 
+              // The request was made and the server responded with a status code
+              // that falls out of the range of 2xx                  
+              let errorType = `${error.response.status}  ${error.response.statusText}`
+              this.toast.error(errorType,this.options)                       
+          } else if (error.request) { 
+              // The request was made but no response was received
+              // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+              // http.ClientRequest in node.js                   
+              this.toast.error(error.request,this.options);                    
+          } else {                       
+              // Something happened in setting up the request that triggered an Error
+              this.toast.error(error.message,this.options);
+          }                   
+        });
     }
+
   },
 }
 </script>

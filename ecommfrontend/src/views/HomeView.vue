@@ -1,12 +1,24 @@
 <template>
   <div class="home">
-    <div class="container-fluid bg-dark">
-      <h3 class="text-warning text-center mt-3">New Products</h3>
-      <div class="p-5 row d-flex">
+    <div class="container-fluid mt-3 bg-dark d-flex flex-column align-items-center p-5">
+      <h3 class="text-warning">Active Products</h3>
+      <div class="row d-flex">
         <div v-for="product in products" :key="product.id" class="my-3 col-lg-3 col-md-4 col-sm-6">
           <Product :product="product"/>
         </div>                 
       </div>
+      <Paginate
+        id="unit"
+        v-model="page"
+        :page-count="pageCount"
+        :page-range="10"
+        :margin-pages="3"
+        :initial-page="1"
+        :prev-class="'ignore'"
+        :next-class="'ignore'"
+        :disabled-class="'ignore'"
+        :click-handler="newPage"
+      />
     </div>
     
   </div>
@@ -16,19 +28,21 @@
 import axios from 'axios'
 import Product from '../components/Product.vue'
 import { useToast } from "vue-toastification"
+import Paginate from "vuejs-paginate-next"
 
 export default {
   name: 'HomeView',
   components: { 
-    Product   
+    Product,
+    Paginate 
   },
   props:{
     searchQuery:'',
   },
   data(){
     return {
-      products:[],
-      productsHolder:[]
+      products:[],      
+      pageCount:1
     }
   },
   setup(){   
@@ -50,32 +64,72 @@ export default {
     return {options,toast}
   },
   watch:{
-    searchQuery:{
-      handler:function(){
-        if(this.searchQuery === ''){
-          this.products = this.productsHolder
-        }
-        else{
-         this.products = this.products.filter(this.checkQuery)
-        }        
+    searchQuery:{      
+      handler:async function(){ 
+        this.page=1      
+        await axios.get(`api/products/?category=&product_state=active&title=${this.searchQuery}`)
+            .then(response=>{              
+              if (response.status === 200){
+                this.pageCount=Math.ceil(response.data['count']/16)
+                this.products=response.data.results                  
+              }         
+            })
+            .catch(error=> { 
+              if (error.response) { 
+                  // The request was made and the server responded with a status code
+                  // that falls out of the range of 2xx                  
+                  let errorType = `${error.response.status}  ${error.response.statusText}`
+                  this.toast.error(errorType,this.options)                       
+              } else if (error.request) { 
+                  // The request was made but no response was received
+                  // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+                  // http.ClientRequest in node.js                   
+                  this.toast.error(error.request,this.options);                    
+              } else {                       
+                  // Something happened in setting up the request that triggered an Error
+                  this.toast.error(error.message,this.options);
+              }                   
+            });   
       }
     }
   },
   methods:{
-    checkQuery(product){
-      if (product.title.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-       product.created_by.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-       product.category.toLowerCase().includes(this.searchQuery.toLowerCase()) ){
-        return product
-      }      
-    }
-  },
-  created(){
-    axios 
-        .get('api/products')
+    async newPage(selected=1){      
+      await axios 
+        .get(`api/products/?category=&product_state=active&page=${selected}&title=${this.searchQuery}`)
         .then(response=>{
+          console.log(response)
           if (response.status === 200){
-            this.products=response.data
+            this.pageCount=Math.ceil(response.data['count']/16)
+            this.products=response.data.results           
+          }         
+        })
+        .catch(error=> {
+          if (error.response) { 
+              // The request was made and the server responded with a status code
+              // that falls out of the range of 2xx                  
+              let errorType = `${error.response.status}  ${error.response.statusText}`
+              this.toast.error(errorType,this.options)                       
+          } else if (error.request) { 
+              // The request was made but no response was received
+              // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+              // http.ClientRequest in node.js                   
+              this.toast.error(error.request,this.options);                    
+          } else {                       
+              // Something happened in setting up the request that triggered an Error
+              this.toast.error(error.message,this.options);
+          }                   
+        });
+    }     
+  },  
+  async created(){
+    await axios 
+        .get('api/products/?category=&product_state=active')
+        .then(response=>{
+          console.log(response)
+          if (response.status === 200){
+            this.pageCount=Math.ceil(response.data['count']/16)
+            this.products=response.data.results
             this.productsHolder=this.products
           }         
         })
@@ -96,6 +150,5 @@ export default {
           }                   
         });       
   }
-
 }
 </script>
