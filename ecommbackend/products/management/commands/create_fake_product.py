@@ -20,7 +20,6 @@ class Command(BaseCommand):
                 slug=slugify(title),
                 description=fake.paragraph(),
                 price=fake.random_number(digits=3),
-                product_state=random.choice(choices_list),
-                image_url = fake.image_url()             
+                product_state=random.choice(choices_list),                            
             )
         self.stdout.write(self.style.SUCCESS('Successfully generated random product data'))

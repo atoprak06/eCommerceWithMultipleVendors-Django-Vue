@@ -10,7 +10,7 @@
                         <small class="text-uppercase bg-dark text-white rounded-3 p-1">{{product.category}}</small>
                     </div>
                     <div class="image col-6">
-                        <img :src="product.image_url" style="width:100%; max-height:18rem; object-fit:contain; height:auto;">
+                        <img :src="[preview!==null?preview:product.image_url]" style="width:100%; max-height:18rem; object-fit:contain; height:auto;">
                     </div>
                 </div>                               
                 <p class="col-6">{{product.description}} </p>                
@@ -45,6 +45,10 @@
                         <option value="deactive">Deactive</option>
 
                     </select>                    
+                </div>
+                <div class="mb-3">
+                    <label for="product_image" class="form-label text-white">Image:</label>
+                    <input @change="uploadImg($event)" type="file" id="product_image" class="form-control">
                 </div>                                           
             <button type="submit" class="btn btn-primary">Edit</button>            
         </form>   
@@ -61,7 +65,8 @@ import moment from 'moment'
 export default {
     data(){
         return {
-            product:{},           
+            product:{},
+            preview:null       
         }
     },
     setup(){
@@ -84,18 +89,18 @@ export default {
         const toast = useToast()       
         return {tokenStore,cartStore,toast,options}
     },
-    mounted(){
-        axios.get(`api/products/${ this.$route.params.id }`)
+    async mounted(){        
+        await axios.get(`api/products/${ this.$route.params.id }`)
             .then(response=>{
-                this.product = response.data
+                this.product = response.data                
             })
     },
     methods:{
        async submit(){
-            await axios.patch(`api/products/${ this.$route.params.id }/`,this.product)
+            await axios.patch(`api/products/${ this.$route.params.id }/`,this.product,{headers: {'Content-Type': 'multipart/form-data'}})
                 .then(response=>{
                     if (response.status === 200){
-                        this.toast.success('Product Edited succesfully',this.options)
+                        this.toast.success('Product Edited succesfully',this.options)                        
                     }                 
                 })
                 .catch(error=> {
@@ -117,6 +122,19 @@ export default {
         },
         getTime(created_at){            
             return moment(created_at).fromNow()
+        },        
+        uploadImg(e){
+            const target = e.target;
+            if (target.files){                
+                var reader = new FileReader();
+                reader.onload = (a) => {                    
+                    this.preview = a.target.result;
+                }
+                reader.readAsDataURL(target.files[0])
+            }            
+            if(target&&target.files){                          
+                this.product.image_url=target.files[0]             
+            }            
         }
     }
 }

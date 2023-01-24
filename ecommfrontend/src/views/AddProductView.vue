@@ -29,6 +29,10 @@
 
                 </select>                    
             </div>
+            <div class="mb-3">
+                <label for="product_image" class="form-label text-white">Image:</label>
+                <input @change="uploadImg($event)" type="file" id="product_image" class="form-control">
+            </div>
             <div class="mb-3 d-flex justify-content-end">
                 <button type="submit" class="btn btn-primary">Add New Product</button> 
             </div>                                           
@@ -60,14 +64,16 @@ export default {
     },
     data(){
         return {
-            product : {}
+            product : {},           
         }
     },
     methods:{
         async submit(){
-           await axios.post('api/products/',this.product)
+
+           await axios.post('api/products/',this.product,{headers: {'Content-Type': 'multipart/form-data'}})
                 .then(response=>{
-                    if (response.status === 201){                        
+                    console.log(response)
+                    if (response.status === 201){                            
                         this.toast.success('New Product Added',this.options)
                     } 
                 }) 
@@ -87,6 +93,12 @@ export default {
                         this.toast.error(error.message,this.options);
                     }                   
                 });                           
+        },
+        uploadImg(e){            
+            const target = e.target;
+            if(target&&target.files){                
+                this.product.image_url=target.files[0]                
+            }            
         }
     }    
 }
