@@ -71,8 +71,7 @@ export default {
         async submit(){
 
            await axios.post('api/products/',this.product,{headers: {'Content-Type': 'multipart/form-data'}})
-                .then(response=>{
-                    console.log(response)
+                .then(response=>{                    
                     if (response.status === 201){                            
                         this.toast.success('New Product Added',this.options)
                     } 

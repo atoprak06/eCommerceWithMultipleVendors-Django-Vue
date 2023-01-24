@@ -33,7 +33,8 @@ export default {
     return {
       products:[],
       productsHolder:[],
-      pageCount:1,           
+      pageCount:1,  
+      page:1,        
     }    
   },
   setup(){
@@ -97,8 +98,7 @@ export default {
     async newPage(selected){
       await axios 
         .get(`api/products/?created_by__username=${this.$route.params.username}&product_state=active&page=${selected}&title=${this.searchQuery}`)
-        .then(response=>{
-          console.log(response)
+        .then(response=>{          
           if (response.status === 200){
             this.pageCount=Math.ceil(response.data['count']/16)
             this.products=response.data.results

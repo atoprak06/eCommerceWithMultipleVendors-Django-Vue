@@ -42,7 +42,8 @@ export default {
   data(){
     return {
       products:[],      
-      pageCount:1
+      pageCount:1,
+      page:1,
     }
   },
   setup(){   
@@ -97,8 +98,7 @@ export default {
     async newPage(selected=1){      
       await axios 
         .get(`api/products/?category=&product_state=active&page=${selected}&title=${this.searchQuery}`)
-        .then(response=>{
-          console.log(response)
+        .then(response=>{          
           if (response.status === 200){
             this.pageCount=Math.ceil(response.data['count']/16)
             this.products=response.data.results           
@@ -125,8 +125,7 @@ export default {
   async created(){
     await axios 
         .get('api/products/?category=&product_state=active')
-        .then(response=>{
-          console.log(response)
+        .then(response=>{          
           if (response.status === 200){
             this.pageCount=Math.ceil(response.data['count']/16)
             this.products=response.data.results

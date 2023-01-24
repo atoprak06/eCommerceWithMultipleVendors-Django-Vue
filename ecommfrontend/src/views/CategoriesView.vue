@@ -33,6 +33,7 @@ data(){
   return {
     products:[],    
     pageCount:1,
+    page:1
   }
 },
 setup(){   
@@ -97,8 +98,7 @@ methods:{
     async newPage(selected){
       await axios 
         .get(`api/products/?category=${this.$route.params.id}&product_state=active&page=${selected}&title=${this.searchQuery}`)
-        .then(response=>{
-          console.log(response)
+        .then(response=>{          
           if (response.status === 200){
             this.pageCount=Math.ceil(response.data['count']/16)
             this.products=response.data.results            
