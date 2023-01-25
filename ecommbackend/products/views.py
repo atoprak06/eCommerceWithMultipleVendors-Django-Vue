@@ -3,8 +3,8 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from .permissions import IsOwnerOrReadOnly
 from rest_framework.response import Response
-from .serializers import ProductSerializer,CategorySerializer
-from .models import Product,Category
+from .serializers import ProductSerializer,CategorySerializer,CommentSerializer
+from .models import Product,Category,Comment,Comments
 from user.models import UserProfile
 from user.serializers import UserShowSerializerVendor
 from django.template.defaultfilters import slugify
@@ -20,23 +20,27 @@ class ProductFilter(django_filters.FilterSet):
         fields = ['category','product_state','created_by__username','title']
 
 
+class MultiSerializerViewSet(viewsets.ModelViewSet):
+    serializers = { 
+        'default': None,
+    }
 
-class ProductViewSet(viewsets.ModelViewSet):
-    serializer_class = ProductSerializer
+    def get_serializer_class(self):
+        return self.serializers.get(self.action, self.serializers['default'])
+
+class ProductViewSet(MultiSerializerViewSet):
+    serializers ={
+        'default' : ProductSerializer,
+        'comments': CommentSerializer,    
+    }     
     queryset = Product.objects.all()
-    permission_classes = [IsAuthenticatedOrReadOnly,IsOwnerOrReadOnly]
+    permission_classes = [IsOwnerOrReadOnly]
     filter_backends = [DjangoFilterBackend]
     filterset_class = ProductFilter
-    # filterset_fields = ['category','product_state','created_by__username','title']
-  
 
     def perform_create(self, serializer):        
         serializer.save(created_by=self.request.user,slug=slugify(self.request.data['title']))        
-    
-    # def list(self,request):
-    #     products = Product.objects.filter(product_state='active',created_by__is_vendor=True)
-    #     serializer= ProductSerializer(products,many=True)
-    #     return Response(serializer.data)       
+   
     
     @action(detail=False)
     def my_products(self,request):
@@ -47,18 +51,24 @@ class ProductViewSet(viewsets.ModelViewSet):
         if page is not None:
             return paginator.get_paginated_response(page)
         return Response(serializer.data)
+    
+    @action(detail=True, methods=['get','post',],permission_classes=[IsAuthenticatedOrReadOnly])
+    def comments(self,request,pk=None):
+        product = Product.objects.get(id=pk)
+        comments=Comments.objects.get_or_create(product=product)
+        if request.method == 'GET':            
+            comment = Comment.objects.filter(comments=comments[0])
+            serializer = CommentSerializer(comment,many=True)
+            paginator = pagination.PageNumberPagination()
+            page = paginator.paginate_queryset(serializer.data, request)
+            if page is not None:                
+                return paginator.get_paginated_response(page)            
+            return Response(serializer.data)
+        if request.method == 'POST':
+            comment = Comment.objects.create(user=self.request.user,comments=comments[0],star=request.data['star'],comment=request.data['comment'])
+            serializer = CommentSerializer(comment,many=False)
+            return Response(serializer.data)
 
-# class VendorsViewSet(viewsets.ReadOnlyModelViewSet):
-#     serializer_class = UserShowSerializerVendor
-#     permission_classes = [IsAuthenticatedOrReadOnly,IsOwnerOrReadOnly]
-#     filter_backends = [DjangoFilterBackend]
-#     filterset_fields = ['username']
-  
-#     def get_queryset(self):
-#         queryset=UserProfile.objects.prefetch_related(Prefetch('products',queryset=Product.objects.filter(product_state='active'))).filter(is_vendor=True)           
-#         username = self.request.query_params.get('username')
-#         queryset.filter(username=username)        
-#         return queryset
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = CategorySerializer

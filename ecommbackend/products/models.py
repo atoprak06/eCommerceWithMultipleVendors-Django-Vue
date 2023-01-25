@@ -1,8 +1,5 @@
 from django.db import models
 from user.models import UserProfile
-from django.template.defaultfilters import slugify
-from faker import Faker
-fake=Faker()
 
 class Category(models.Model):
     title = models.CharField(max_length=100)
@@ -33,3 +30,29 @@ class Product(models.Model):
 
     def __str__(self):
         return self.title
+
+class Comments(models.Model):
+    product = models.OneToOneField(Product,on_delete=models.CASCADE,null=True,blank=True,related_name='comments')  
+
+    def __str__(self):
+        return f"{self.product.title}-{self.product.id}"    
+    class Meta:
+        verbose_name_plural="comments"
+
+
+    
+class Comment(models.Model):
+    comments= models.ForeignKey(Comments,on_delete=models.CASCADE,related_name='comments')
+    star_choices = ((0,'None'),(1,'Very Bad'),(2,'Bad'),(3,'Not Bad'),(4,'Good'),(5,'Very Good'))
+    star = models.CharField(max_length=40,choices=star_choices,default=0)
+    user = models.ForeignKey(UserProfile,on_delete=models.CASCADE,related_name='comments')
+    created_at = models.DateTimeField(auto_now_add=True)
+    comment=models.TextField(max_length=200,null=False,blank=False)
+
+    class Meta:
+        ordering=['-created_at']
+        verbose_name_plural="comment"
+
+    def __str__(self):
+        return f"{self.user.username}'-'{self.created_at}"
+

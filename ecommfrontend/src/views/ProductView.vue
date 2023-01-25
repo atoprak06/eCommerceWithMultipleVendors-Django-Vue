@@ -16,6 +16,55 @@
                 <p class="col-6">{{product.description}} </p>                
                 <button @click.prevent="cartStore.addToCart(product);toast.success('Product Added to Cart',options)" class="btn btn-danger">Add to cart</button>              
             </div>            
+        </div>        
+        <div class="card my-5 p-3 d-flex flex-column col-12">
+            <h5>Add a comment</h5>
+            <form @submit.prevent="submitComment">
+                <textarea v-model="submitText" rows="4" class="form-control"/>
+                <label for="rate" class="mt-3">Rate Product</label>
+                <select class="form-select" v-model="rateStar" id="rate">
+                    <option value="0">None</option>
+                    <option value="1">Very Bad</option>
+                    <option value="2">Bad</option>
+                    <option value="3">Not Bad</option>
+                    <option value="4">Good</option>
+                    <option value="5">Very Good</option>
+                </select> 
+                <button class="btn btn-primary float-end mt-3">Post</button>                                              
+            </form>
+        </div>        
+        <div v-if="comments.length>0" class="row mt-5 d-flex flex-column justify-content-center align-items-center">
+            <h3 class="text-white col-12 text-center">Comments</h3>
+           
+            <div class="card my-3" v-for="comment in comments" :key="comment">
+                <div class="d-flex justify-content-between mt-3 col-12">
+                    <div class="d-flex gap-3">
+                        <h3 class="lead fs-4">{{comment.user}}</h3>
+                        <p>{{getTime(comment.created_at)}}</p>
+                    </div>
+                    <div class="d-flex">
+                        <i v-for="star in comment.star" :key="star" class="text-warning fa fa-star rating-color"></i>
+                        <template v-if="comment.star>=0">
+                            <i v-for="left in 5-comment.star" :key="left" class="text-secondary fa fa-star rating-color"></i>
+                        </template>                                            
+                    </div> 
+                </div>
+                <hr>
+                <p class="col-12">{{comment.comment}}</p>                
+            </div>
+            <Paginate
+                id="unit"                
+                :page-count="pageCount"
+                :page-range="10"
+                :margin-pages="3"
+                :initial-page="1"
+                :prev-class="'ignore'"
+                :next-class="'ignore'"
+                :disabled-class="'ignore'"
+                :click-handler="getComments"
+                
+            />
+            
         </div>
         <form @submit.prevent="submit" v-if="tokenStore.user.username===product.created_by" class="d-flex flex-column col-6 justify-content-center m-3">
                 <h3 class="text-warning">Edit your Product</h3>
@@ -60,13 +109,19 @@ import axios from 'axios'
 import {useTokenStore} from '../stores/TokensStore'
 import {useCartStore} from '../stores/CartStore'
 import { useToast } from "vue-toastification"
-
 import moment from 'moment'
+import Paginate from "vuejs-paginate-next"
+
+
 export default {
     data(){
         return {
             product:{},
-            preview:null       
+            preview:null,
+            comments:[],
+            pageCount:1,
+            rateStar:0,
+            submitText:'',
         }
     },
     setup(){
@@ -86,7 +141,8 @@ export default {
                 icon: true,
                 rtl: false
                 }       
-        const toast = useToast()       
+        const toast = useToast()
+       
         return {tokenStore,cartStore,toast,options}
     },
     async mounted(){        
@@ -94,9 +150,18 @@ export default {
             .then(response=>{
                 this.product = response.data                
             })
+        await this.getComments(1)        
     },
     methods:{
-       async submit(){
+        async submitComment(){
+            let data = {}            
+            data.comment = this.submitText
+            data.star = this.rateStar           
+
+            axios.post(`api/products/${this.$route.params.id}/comments/`,data)
+                .then(response=>{console.log(response)})
+        },
+        async submit(){
             await axios.patch(`api/products/${ this.$route.params.id }/`,this.product,{headers: {'Content-Type': 'multipart/form-data'}})
                 .then(response=>{
                     if (response.status === 200){
@@ -120,6 +185,14 @@ export default {
                     }                   
                 });           
         },
+        async getComments(selected=1){
+            await axios.get(`api/products/${this.$route.params.id}/comments/?page=${selected}`)
+            .then(response=>{
+                this.pageCount = Math.ceil(response.data['count']/16)
+                this.comments = response.data['results']
+                
+            })
+        },
         getTime(created_at){            
             return moment(created_at).fromNow()
         },        
@@ -136,6 +209,9 @@ export default {
                 this.product.image_url=target.files[0]             
             }            
         }
+    },
+    components:{
+        Paginate
     }
 }
 </script>
