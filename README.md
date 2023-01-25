@@ -1,5 +1,5 @@
 # Functionality
-With the Ecomm, you can register as a new user and sign in, you can add new products, order products, follow your sold product history, follow your order history, you can navigate user specific products or category specific products,search products and more in the future hopefully.
+With the Ecomm, you can register as a new user and sign in, you can add new products, order products, follow your sold product history, follow your order history, you can navigate user specific products or category specific products,search products,comment on products and more in the future hopefully.
 
 # Installation
  Project developed in virtual envinroment. You can install Python required packages with requirements.txt, node requirements can be found on package.json.
