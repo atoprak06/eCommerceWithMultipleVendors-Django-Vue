@@ -68,5 +68,31 @@ After it initializes, you will see that there is link points to http://127.0.0.1
 <br/>
 After it initializes, you can then visit  http://localhost:8080/ (or different depends on your machine, check your terminal) and navigate it. From there on, docs will include how the project works.
 
+# Database Models
+## 1- User
+For the user model Django default AbstractUser is used with the extra fields. Note that to activate this user model, in the settings you need to point `AUTH_USER_MODEL` field to the user model.
+<br/>
+`AUTH_USER_MODEL = 'user.UserProfile'`
+<br/> 
+It's good to mention about *is_vendor* field that has been created. This field's state will decide if that user's product will be presented on the front end or not. User can alter its *is_vendor* state by visiting edit profile on the front end.
+
+## 2- Products
+For the products, 4 main model is created. *Category, Product, Comments* and *Comment* models.
+### - Category
+This model can be altered by just the admin user on the backend. Before creating product instances, there should be categories already created.
+### - Product
+It is the main product model. *category* and *created_by* fields are linked to Category and User models respectively using one to many relationship.
+### - Comments
+Every product should have a comment section, so it is created for this purpose and linked to product with one to one relationsip.
+### - Comment
+Every comment created by users should be stored in database. It is linked to *Comments* model with one to many relationship.
+
+## 3- Order
+There are 2 model created for this section, *Order* and *OrderItem*
+### - Order
+It represent order created by the users. It is linked to User model with one to many relationship.
+### - OrderItem
+Products that has been added to order is represented by this model. It is linked to *Order* and *Product* models with one to many relationship.
+
 
 

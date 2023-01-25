@@ -17,7 +17,7 @@
                 <button @click.prevent="cartStore.addToCart(product);toast.success('Product Added to Cart',options)" class="btn btn-danger">Add to cart</button>              
             </div>            
         </div>        
-        <div class="card my-5 p-3 d-flex flex-column col-12">
+        <div v-if="tokenStore.isAuthenticated" class="card my-5 p-3 d-flex flex-column col-12">
             <h5>Add a comment</h5>
             <form @submit.prevent="submitComment">
                 <textarea v-model="submitText" rows="4" class="form-control"/>
@@ -32,7 +32,8 @@
                 </select> 
                 <button class="btn btn-primary float-end mt-3">Post</button>                                              
             </form>
-        </div>        
+        </div>
+               
         <div v-if="comments.length>0" class="row mt-5 d-flex flex-column justify-content-center align-items-center">
             <h3 class="text-white col-12 text-center">Comments</h3>
            
@@ -158,8 +159,8 @@ export default {
             data.comment = this.submitText
             data.star = this.rateStar           
 
-            axios.post(`api/products/${this.$route.params.id}/comments/`,data)
-                .then(response=>{console.log(response)})
+            await axios.post(`api/products/${this.$route.params.id}/comments/`,data)
+                .then(this.toast.success('You commented on the product',this.options))
         },
         async submit(){
             await axios.patch(`api/products/${ this.$route.params.id }/`,this.product,{headers: {'Content-Type': 'multipart/form-data'}})
