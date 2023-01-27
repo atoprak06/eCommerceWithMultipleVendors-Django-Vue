@@ -94,5 +94,62 @@ It represent order created by the users. It is linked to User model with one to 
 ### - OrderItem
 Products that has been added to order is represented by this model. It is linked to *Order* and *Product* models with one to many relationship.
 
+# Serializers
+Django default models can't be represented on the API as the way they are, so DRF serializers are used to show them as JSON represented data in this project. ModelSerializers class is used since it is very powerful when creating shortcut representation of models that has been created already. Detailed info can be found on the DRF documents: https://www.django-rest-framework.org/api-guide/serializers
+
+
+## User  Serializers
+In this project token based authentication is used
+for the user authentication. Token creating, token destroy, registration of the user is made with the help of the third party module called `Djoser`. It is REST implementation of Django authentication system, it provides already built-in Views for the registration, login, logout, password reset and account activation. Detailed info can be found in the link: https://djoser.readthedocs.io/en/latest/index.html. Before explaining of the User serializers, in the settings of django, djoser settings should be added as below.
+
+ `DJOSER =
+ `<br/>`
+  {
+    `<br/>`    
+    'SERIALIZERS': {
+      `<br/>`
+         'user' : 'user.serializers.UserShowSerializerEdit',
+         'current_user' :'user.serializers.UserShowSerializerEdit',         
+         'user_create_password_retype': 'user.serializers.UserRegistrationSerializer',
+    `<br/>`
+    },
+    `<br/>`
+    'USER_CREATE_PASSWORD_RETYPE':True,
+    `<br/>`   
+}`
+
+Note that password retype is activated for the re password field of the registration form. 
+
+### UserRegistrationSerializer
+UserRegistrationSerializer is created for the basic user registration with the help of `UserCreatePasswordRetypeSerializer` of the djoser serializers.The `User` model that we created before is used for this serializer. Registration is modified like when the new user is registering re type of the password should be used. Validations of the user register like, if the username that has been used within the form is already exists or not, if the email is already exists, if the passwords are matching or in the correct format is achieved easily with the help of this serializer. Note that it is added to djoser settings on the above with the field of `user_create_password_retype`
+
+### UserSerializer
+This serializer is used for the representation of the user on the api. User can fetch it's information or patch it with the help of the djoser `UserSerializer`. User model is used similary for this.  Note that it is added to djoser settings on the above with the fields of `user` and `current_user`. Key 'user' is used for general users whereas 'current_user' lets you set serializer for special /users/me endpoint. 
+
+
+## Products  Serializers
+### ProductSerializer
+For the product serializer, Product model is used. `category` and `created_by` related fields of the product is represented on the API with the help of `SlugRelatedField` and `ReadOnlyField` respectively. `category` is represented on the API as the title field of the category model and `created_by` is showed as username field of the user model. Id of the product and created_by can't be updated on the api as it is modified as readonly fields.
+
+### CategorySerializer
+For the category serializer, Category model is used. Title and id fields are used in here. 
+
+### CommentSerializer
+Comment model is used for this serializer. Related field user is interpreted by `SlugRelatedField` for the API since just username of the user is needed.
+
+## Order Serializers
+### OrderItemSerializer
+ OrderItem model is used. Related field product is interpreted with the `ProductSerializer` that has been created already. This serializer represents items that has been ordered.
+
+### OrderSerializer 
+Order model is used. Related field products is interpreted with the OrderItemSerializer created above. It represents orders and products that belongs to this order. 
+
+### OrderedItemSerializer
+This serializer is used for the representation of the products that user has and got bought by the other users. Note that it inherits from the OrderItemSerializer that has been created before. Additionally new class Order is created for the purpose of the order interpretation with the customer and order id fields. Meta class is also inherited from OrderItemSerializer.Meta, just fields changed. So user can see products that he owns and got bought by the others in the format that is meaningful.
+
+
+
+
+
 
 
