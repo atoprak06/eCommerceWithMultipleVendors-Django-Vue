@@ -118,7 +118,22 @@ for the user authentication. Token creating, token destroy, registration of the 
     `<br/>`   
 }`
 
-Note that password retype is activated for the re password field of the registration form. 
+Note that password retype is activated for the re password field of the registration form. Also DRF settings in the settings.py modified as token based authentication for the front end and session based authentication on the API end points. Default permissions are modified as if user is authenticated or readonly. It can be seen at the below.
+<br/>
+`REST_FRAMEWORK = {   
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 16,
+    'DEFAULT_AUTHENTICATION_CLASSES':(
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES':(
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ),
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+}`
+<br/>
+Note that pagination is activated with the 16 items per page.
 
 ### UserRegistrationSerializer
 UserRegistrationSerializer is created for the basic user registration with the help of `UserCreatePasswordRetypeSerializer` of the djoser serializers.The `User` model that we created before is used for this serializer. Registration is modified like when the new user is registering re type of the password should be used. Validations of the user register like, if the username that has been used within the form is already exists or not, if the email is already exists, if the passwords are matching or in the correct format is achieved easily with the help of this serializer. Note that it is added to djoser settings on the above with the field of `user_create_password_retype`
@@ -148,8 +163,26 @@ Order model is used. Related field products is interpreted with the OrderItemSer
 This serializer is used for the representation of the products that user has and got bought by the other users. Note that it inherits from the OrderItemSerializer that has been created before. Additionally new class Order is created for the purpose of the order interpretation with the customer and order id fields. Meta class is also inherited from OrderItemSerializer.Meta, just fields changed. So user can see products that he owns and got bought by the others in the format that is meaningful.
 
 
+# Views
+Class based views are used for this project. DRF has a nice class called ViewSet and it allows similar logic of the related views to be combined under same class, detailed info can be found in the documentation of the DRF : https://www.django-rest-framework.org/api-guide/viewsets/
+
+## Products
+
+### ProductViewSet
+This viewset is used for the purpose of the how the modeled and serialized product data should look on the API. It inherites from `MultiSerializerViewSet` since there are two different serializer used. MultiSerializerViewSet determines which serializer should be used in different actions, for the default actions listed in the dafault ViewSet methods in the DRF docs, `ProductSerializer` is used. For the `comments` action `CommentSerializer` is used. `actions` are decorators that is used when you want to define custom method for your viewset docs: https://www.django-rest-framework.org/api-guide/viewsets/#marking-extra-actions-for-routing . Here permission class of `IsOwnerOrReadOnly` is used, since product data should be readonly if user is not authenticated, if user is authenticated, user can update product data if it is their product or can create new product. Also django_filter module is used for the filtering data using `ProductFilter` class which is inherited from `django_filters.FilterSet`, filter fields can be seen in fields array. Django filter allows users to filter queryset based on model fields, detailed info can be found on the documents: https://django-filter.readthedocs.io/en/stable/. Note that in the DRF settings in the settings.py `'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']` is modified like this to use django_filter module as a default filter. There are two custom action defined: `my_products` and `comments`. First one is to determine when user request their products created by them, second one is to get comments on the specific product or post comment on that same product. Note that there is also `perform_create` method that creates slug field when user create new product, slug field is created with the help of `slugify` method.
 
 
+### CategoryViewSet
+This Viewset determines how category data should look like on the API. Here just plain queryset is used.
+
+## Order
+
+### OrderViewSet
+This viewset did all the job for the order and orderitem data on the API. Permission class is modified as authenticated since authenticated users should be able to make new orders or get their order history data. `get_queryset` returns orders that belongs to the user who requested the data. Default `create` method of modelViewSet is overridden. When the user makes order on the front end, first order data is created then items in the cart that has been sent as a request data is extracted and orderitems are created. Custom `orderedProducts` action is created for the purpose of the user to be able too see products that belongs to them has been sold. Queryset is filtered accorrdingly. Note that there are `paginator` and `page` attributes created in the custom actions or overridden methods (Same for the product viewsets mentioned before) since pagination should be re-defined when creating these methods or overridden default ones. 
+
+# URLS
+In the main url config file, `product`, `category`, `order`, `users` and `token` end points are used for navigation on the API. Additionally static url is added for serving purpose of the media files,such as images in this project. Other url config files modified with the help of DRF's `DefaultRouter` class. This class allows auto creation urls of detail method or custom action methods. Check out documentation for more info: https://www.django-rest-framework.org/api-guide/routers/#defaultrouter. Note that token endpoint is created with the djoser, it is used to created new tokens and destroying tokens when user logins and logouts(token based authentication).
+Additional rest_framework.url is added to main url config for login or logout funcionality on the API(not on the front end) on the browser(session based authentication).
 
 
 
