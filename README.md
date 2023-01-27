@@ -94,7 +94,7 @@ For the user model Django default AbstractUser is used with the extra fields. No
 <br/> 
 It's good to mention about *is_vendor* field that has been created. This field's state will decide if that user's product will be presented on the front end or not. User can alter its *is_vendor* state by visiting edit profile on the front end.
 
-## Products <a name="productsmodel"></a>
+## Products <a name="productmodel"></a>
 For the products, 4 main model is created. *Category, Product, Comments* and *Comment* models.
 ### - Category
 This model can be altered by just the admin user on the backend. Before creating product instances, there should be categories already created.
