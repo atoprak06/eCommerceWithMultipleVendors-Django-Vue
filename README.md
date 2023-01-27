@@ -66,7 +66,7 @@ After it initializes, you will see that there is link points to http://127.0.0.1
 <br/>
 `npm run serve`
 <br/>
-After it initializes, you can then visit  http://localhost:8080/ (or different depends on your machine, check your terminal) and navigate it. From there on, docs will include how the project works.
+After it initializes, you can then visit  http://localhost:8080/ (or different depends on your machine, check your terminal. If it is different modify `CORS_ALLOWED_ORIGINS` in the settings.py file accordingly) and navigate it. From there on, docs will include how the project works.
 
 # Database Models
 ## 1- User
