@@ -1,7 +1,14 @@
-# Functionality
+# Table of Content
+1. [Functionality](#functionality)
+2. [Installation](#installation)
+3. [Begginner's Guide](#guide)
+4. [Database Models](#databasemodels)
+
+
+# Functionality <a name="functionality"></a>
 With the Ecomm, you can register as a new user and sign in, you can add new products, order products, follow your sold product history, follow your order history, you can navigate user specific products or category specific products,search products,comment on products and more in the future hopefully.
 
-# Installation
+# Installation <a name="installation"></a>
  Project developed in virtual envinroment. You can install Python required packages with requirements.txt, node requirements can be found on package.json.
  For python dependencies initialize;
  `pip install -r requirements.txt`
@@ -9,7 +16,7 @@ With the Ecomm, you can register as a new user and sign in, you can add new prod
  `npm install`
  in your project directory. Detailed installation guide can be found in the 'Beginners Guide' section for the users who are not familiar with GitHub, Django or Vue.
 
-# Begginner's Guide
+# Begginner's Guide <a name="guide"></a>
 To use E-commerce, first clone repository by using your terminal;
 <br/>
 `git clone https://github.com/atoprak06/eCommerceWithMultipleVendors-Django-Vue.git`
@@ -68,7 +75,7 @@ After it initializes, you will see that there is link points to http://127.0.0.1
 <br/>
 After it initializes, you can then visit  http://localhost:8080/ (or different depends on your machine, check your terminal. If it is different modify `CORS_ALLOWED_ORIGINS` in the settings.py file accordingly) and navigate it. From there on, docs will include how the project works.
 
-# Database Models
+# Database Models<a name="databasemodels"></a>
 ## 1- User
 For the user model Django default AbstractUser is used with the extra fields. Note that to activate this user model, in the settings you need to point `AUTH_USER_MODEL` field to the user model.
 <br/>
@@ -183,6 +190,7 @@ This viewset did all the job for the order and orderitem data on the API. Permis
 # URLS
 In the main url config file, `product`, `category`, `order`, `users` and `token` end points are used for navigation on the API. Additionally static url is added for serving purpose of the media files,such as images in this project. Other url config files modified with the help of DRF's `DefaultRouter` class. This class allows auto creation urls of detail method or custom action methods. Check out documentation for more info: https://www.django-rest-framework.org/api-guide/routers/#defaultrouter. Note that token endpoint is created with the djoser, it is used to created new tokens and destroying tokens when user logins and logouts(token based authentication).
 Additional rest_framework.url is added to main url config for login or logout funcionality on the API(not on the front end) on the browser(session based authentication).
+
 
 
 
