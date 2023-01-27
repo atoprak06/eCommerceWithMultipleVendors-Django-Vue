@@ -12,9 +12,14 @@
     3. [Order Serializer](#orderserializer)
 6. [Backend Views](#views)
     1. [Product View](#productview)
-    1. [Order View](#orderview)
+    2. [Order View](#orderview)
 7. [Backend Urls](#urls)
 8. [Backend Settings](#settings)
+9. [Frontend Store](#stores)
+    1. [Token Store](#tokenstore)
+    2. [Cart Store](#cartstore)
+10. [Frontend Components](#components)
+11. [Frontend Views](#frontendviews)  
 
 
 # Functionality <a name="functionality"></a>
@@ -206,7 +211,29 @@ Additional rest_framework.url is added to main url config for login or logout fu
 # Backend Settings <a name="settings"></a>
  There are nine apps added to installed_apps field of the django settings. From them `corsheaders` and `django_cleanup` should be explained hence other ones are mentioned before. With the corsheaders, it helps front end to connect to our backend service, for this `CORS_ALLOWED_ORIGINS` is modified. Detailed information on corsheader can be found in here: https://pypi.org/project/django-cors-headers/. `django_cleanup` is used for the purpose of the when the product image is changed or when the product itself is deleted, old image is removed from database with the help of this app.Note that in the product model image field is modified as `models.FileField` for this purpose, detailed info can be found about this app on the link: https://pypi.org/project/django-cleanup/ 
 
-# 
+# Frontend Store <a name="stores"></a>
+In this project, since user and cart values are needed for multiple views, state management is used with the help of the `pinia` package. `pinia` is recommended by Vue itself officially instead of `vuex`. It both works with composition api and options api, detailed info can be found on: https://pinia.vuejs.org/introduction.html
+
+## TokenStore <a name="tokenstore"></a>
+This store manages authentication state, user login, user logout and retrieving user data from backend with the help of `axios`. Axios is promise-based HTTP client, it simplifies http requests, detailed documentation: https://axios-http.com/docs/intro. Three state is created for this store, `user`, `token` and `isAuthenticated`. Each state is modified with the current user action on the front end. Firstly, `initializeToken` is called to check if user is already logged or not, user token data is stored as localstorage item in the browser. `removeToken` is used when user logs out, it makes request to the backend and destroy token for that user.`getUser` is used to retrieve user data from backend.Lastly `setToken` is used to set retrieved token from backend when user logged in as a state to make use later with axios.
+
+## CartStore <a name="cartstore"></a>
+This store is used with the purpose of creating cart items and modifies them. There is single state called `cart`. Firstly `initializeCart` is called to chek if localstorage has a cart or not. `getCartTotal` returns sum of the quantity of the items in the cart, `getCartPriceTotal` return sum of the prices of the items in the cart, `removeCart` deletes all items in the cart. Note that they are created as `getters` since there is no need to pass arguments to them(they only rely on state,getters are good compared to actions since they are cached). As an actions, there are four methods. `addToCart` is used for adding items to the cart, it first check if item is already in there or not then it modifies quantity accordingly.`removeProduct` removes single item from cart, if the quantity of item is zero, it deletes that item from the cart. `getProductPriceTotal` calculates total price of the item in the cart. `deleteProduct` deletes item from the cart.
 
 
 
+
+# Frontend Components <a name="components"></a>
+## Navbar
+Classic navigation bar from the `bootstrap` module is used. It should be good to mention about category dropdown values are retrieved when this component is created from the backend. Also when logged out, tokenstore is used to destroy token.
+
+## Product
+This component takes product data object as a prob and uses it.It is created since product is used on multiple views.
+
+## Order
+It takes order data object as prop, it is used on `UserPageView` for the purpose of the showing orders of the current user.
+
+## Footer
+Basic footer, it shows username if user is authenticated and user can go to `EditProfileView` to edit current profile via edit profile route.
+
+# Frontend Views <a name="frontendviews"></a>
