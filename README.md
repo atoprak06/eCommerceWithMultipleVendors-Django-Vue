@@ -2,18 +2,19 @@
 1. [Functionality](#functionality)
 2. [Installation](#installation)
 3. [Begginner's Guide](#guide)
-4. [Database Models](#databasemodels)
+4. [Backend Database Models](#databasemodels)
     1. [User Model](#usermodel)
     2. [Product Model](#productmodel)
     3. [Order Model](#ordermodel)
-5. [Serializers](#serializers)
+5. [Backend Serializers](#serializers)
     1. [User Serializer](#userserializer)
     2. [Product Serializer](#productserializer)
     3. [Order Serializer](#orderserializer)
-6. [Views](#views)
+6. [Backend Views](#views)
     1. [Product View](#productview)
     1. [Order View](#orderview)
-7. [Urls](#urls)
+7. [Backend Urls](#urls)
+8. [Backend Settings](#settings)
 
 
 # Functionality <a name="functionality"></a>
@@ -86,7 +87,7 @@ After it initializes, you will see that there is link points to http://127.0.0.1
 <br/>
 After it initializes, you can then visit  http://localhost:8080/ (or different depends on your machine, check your terminal. If it is different modify `CORS_ALLOWED_ORIGINS` in the settings.py file accordingly) and navigate it. From there on, docs will include how the project works.
 
-# Database Models<a name="databasemodels"></a>
+# Backend Database Models<a name="databasemodels"></a>
 ## User <a name="usermodel"></a>
 For the user model Django default AbstractUser is used with the extra fields. Note that to activate this user model, in the settings you need to point `AUTH_USER_MODEL` field to the user model.
 <br/>
@@ -112,7 +113,7 @@ It represent order created by the users. It is linked to User model with one to 
 ### - OrderItem
 Products that has been added to order is represented by this model. It is linked to *Order* and *Product* models with one to many relationship.
 
-# Serializers<a name="serializers"></a>
+# Backend Serializers<a name="serializers"></a>
 Django default models can't be represented on the API as the way they are, so DRF serializers are used to show them as JSON represented data in this project. ModelSerializers class is used since it is very powerful when creating shortcut representation of models that has been created already. Detailed info can be found on the DRF documents: https://www.django-rest-framework.org/api-guide/serializers
 
 
@@ -181,7 +182,7 @@ Order model is used. Related field products is interpreted with the OrderItemSer
 This serializer is used for the representation of the products that user has and got bought by the other users. Note that it inherits from the OrderItemSerializer that has been created before. Additionally new class Order is created for the purpose of the order interpretation with the customer and order id fields. Meta class is also inherited from OrderItemSerializer.Meta, just fields changed. So user can see products that he owns and got bought by the others in the format that is meaningful.
 
 
-# Views <a name="views"></a>
+# Backend Views <a name="views"></a>
 Class based views are used for this project. DRF has a nice class called ViewSet and it allows similar logic of the related views to be combined under same class, detailed info can be found in the documentation of the DRF : https://www.django-rest-framework.org/api-guide/viewsets/
 
 ## Products <a name="productview"></a>
@@ -198,13 +199,14 @@ This Viewset determines how category data should look like on the API. Here just
 ### OrderViewSet
 This viewset did all the job for the order and orderitem data on the API. Permission class is modified as authenticated since authenticated users should be able to make new orders or get their order history data. `get_queryset` returns orders that belongs to the user who requested the data. Default `create` method of modelViewSet is overridden. When the user makes order on the front end, first order data is created then items in the cart that has been sent as a request data is extracted and orderitems are created. Custom `orderedProducts` action is created for the purpose of the user to be able too see products that belongs to them has been sold. Queryset is filtered accorrdingly. Note that there are `paginator` and `page` attributes created in the custom actions or overridden methods (Same for the product viewsets mentioned before) since pagination should be re-defined when creating these methods or overridden default ones. 
 
-# URLS <a name="urls"></a>
+# Backend URLS <a name="urls"></a>
 In the main url config file, `product`, `category`, `order`, `users` and `token` end points are used for navigation on the API. Additionally static url is added for serving purpose of the media files,such as images in this project. Other url config files modified with the help of DRF's `DefaultRouter` class. This class allows auto creation urls of detail method or custom action methods. Check out documentation for more info: https://www.django-rest-framework.org/api-guide/routers/#defaultrouter. Note that token endpoint is created with the djoser, it is used to created new tokens and destroying tokens when user logins and logouts(token based authentication).
 Additional rest_framework.url is added to main url config for login or logout funcionality on the API(not on the front end) on the browser(session based authentication).
 
-# Settings <a name="settings"></a>
+# Backend Settings <a name="settings"></a>
  There are nine apps added to installed_apps field of the django settings. From them `corsheaders` and `django_cleanup` should be explained hence other ones are mentioned before. With the corsheaders, it helps front end to connect to our backend service, for this `CORS_ALLOWED_ORIGINS` is modified. Detailed information on corsheader can be found in here: https://pypi.org/project/django-cors-headers/. `django_cleanup` is used for the purpose of the when the product image is changed or when the product itself is deleted, old image is removed from database with the help of this app.Note that in the product model image field is modified as `models.FileField` for this purpose, detailed info can be found about this app on the link: https://pypi.org/project/django-cleanup/ 
 
+# 
 
 
 
