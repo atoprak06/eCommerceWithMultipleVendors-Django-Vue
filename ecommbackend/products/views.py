@@ -5,10 +5,7 @@ from .permissions import IsOwnerOrReadOnly
 from rest_framework.response import Response
 from .serializers import ProductSerializer,CategorySerializer,CommentSerializer
 from .models import Product,Category,Comment,Comments
-from user.models import UserProfile
-from user.serializers import UserShowSerializerVendor
 from django.template.defaultfilters import slugify
-from django.db.models import Prefetch
 import django_filters 
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import pagination

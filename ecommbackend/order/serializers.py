@@ -16,17 +16,13 @@ class OrderSerializer(serializers.ModelSerializer):
         model=Order
         fields=['id','created_at','orderTotalPrice','products']
 
-class OrderProductSerializer(serializers.ModelSerializer):
-    customer = serializers.SlugRelatedField(many=False,slug_field='username',queryset=UserProfile.objects.all())    
-    class Meta:
-        model=Order 
-        fields=['customer','id'] 
-
-class OrderedItemSerializer(serializers.ModelSerializer):    
-    order = OrderProductSerializer(many=False)
-    product = ProductSerializer(many=False)
-    class Meta:
-        model=OrderItem
+class OrderedItemSerializer(OrderItemSerializer):    
+    class Order(OrderSerializer):
+        customer =  serializers.SlugRelatedField(many=False,slug_field='username',queryset=UserProfile.objects.all())   
+        class Meta(OrderSerializer.Meta):
+            fields=['customer','id']
+    order = Order(many=False)    
+    class Meta(OrderItemSerializer.Meta):                
         fields=['order','created_at','quantity','productTotalPrice','product']
         
 

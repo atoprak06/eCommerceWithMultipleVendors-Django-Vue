@@ -1,16 +1,11 @@
 from rest_framework import viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticatedOrReadOnly,IsAuthenticated
-# from .permissions import IsOwnerOrReadOnly
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from .serializers import OrderItemSerializer,OrderSerializer,OrderedItemSerializer
-from products.models import Product,Category
+from .serializers import OrderSerializer,OrderedItemSerializer
+from products.models import Product
 from .models import Order,OrderItem
-# from user.serializers import UserShowSerializerVendor
-from django.db.models import Prefetch
-from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import pagination
-
 
 
 class OrderViewSet(viewsets.ModelViewSet):

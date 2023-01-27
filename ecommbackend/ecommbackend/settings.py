@@ -66,12 +66,11 @@ MIDDLEWARE = [
 
 DJOSER = {    
     'SERIALIZERS': {
-         'user' : 'user.serializers.UserShowSerializerEdit',
-         'current_user' :'user.serializers.UserShowSerializerEdit',         
+         'user' : 'user.serializers.UserSerializer',
+         'current_user' :'user.serializers.UserSerializer',         
          'user_create_password_retype': 'user.serializers.UserRegistrationSerializer',
     },
-    'USER_CREATE_PASSWORD_RETYPE':True,
-    
+    'USER_CREATE_PASSWORD_RETYPE':True,    
 }
 
 ROOT_URLCONF = 'ecommbackend.urls'
