@@ -202,6 +202,9 @@ This viewset did all the job for the order and orderitem data on the API. Permis
 In the main url config file, `product`, `category`, `order`, `users` and `token` end points are used for navigation on the API. Additionally static url is added for serving purpose of the media files,such as images in this project. Other url config files modified with the help of DRF's `DefaultRouter` class. This class allows auto creation urls of detail method or custom action methods. Check out documentation for more info: https://www.django-rest-framework.org/api-guide/routers/#defaultrouter. Note that token endpoint is created with the djoser, it is used to created new tokens and destroying tokens when user logins and logouts(token based authentication).
 Additional rest_framework.url is added to main url config for login or logout funcionality on the API(not on the front end) on the browser(session based authentication).
 
+# Settings <a name="settings"></a>
+ There are nine apps added to installed_apps field of the django settings. From them `corsheaders` and `django_cleanup` should be explained hence other ones are mentioned before. With the corsheaders, it helps front end to connect to our backend service, for this `CORS_ALLOWED_ORIGINS` is modified. Detailed information on corsheader can be found in here: https://pypi.org/project/django-cors-headers/. `django_cleanup` is used for the purpose of the when the product image is changed or when the product itself is deleted, old image is removed from database with the help of this app.Note that in the product model image field is modified as `models.FileField` for this purpose, detailed info can be found about this app on the link: https://pypi.org/project/django-cleanup/ 
+
 
 
 
