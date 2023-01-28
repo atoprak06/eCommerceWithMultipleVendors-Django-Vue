@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <div class="container-fluid mt-3 bg-dark d-flex flex-column align-items-center p-5">
-      <h3 class="text-warning">Active Products</h3>
+      <h3 class="text-warning">Home</h3>
       <div class="row d-flex">
         <div v-for="product in products" :key="product.id" class="my-3 col-lg-3 col-md-4 col-sm-6">
           <Product :product="product"/>
@@ -128,8 +128,7 @@ export default {
         .then(response=>{          
           if (response.status === 200){
             this.pageCount=Math.ceil(response.data['count']/16)
-            this.products=response.data.results
-            this.productsHolder=this.products
+            this.products=response.data.results            
           }         
         })
         .catch(error=> {
