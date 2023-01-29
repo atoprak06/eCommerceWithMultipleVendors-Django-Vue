@@ -18,6 +18,7 @@
 9. [Frontend Store](#stores)
     1. [Token Store](#tokenstore)
     2. [Cart Store](#cartstore)
+    3. [Request Store](#requeststore)
 10. [Frontend Components](#components)
 11. [Frontend Views](#frontendviews)  
     1. [Home View](#homeview)
@@ -236,7 +237,8 @@ This store manages authentication state, user login, user logout and retrieving 
 ## CartStore <a name="cartstore"></a>
 This store is used with the purpose of creating cart items and modifies them. There is single state called `cart`. Firstly `initializeCart` is called to check if localstorage has a cart or not. `getCartTotal` returns sum of the quantity of the items in the cart, `getCartPriceTotal` return sum of the prices of the items in the cart, `removeCart` deletes all items in the cart. Note that they are created as `getters` since there is no need to pass arguments to them(they only rely on state,getters are good compared to actions since they are cached). As an actions, there are four methods. `addToCart` is used for adding items to the cart, it first check if item is already in there or not then it modifies quantity accordingly.`removeProduct` removes single item from cart, if the quantity of item is zero, it deletes that item from the cart. `getProductPriceTotal` calculates total price of the item in the cart. `deleteProduct` deletes item from the cart.
 
-
+## RequestStore <a name="requeststore"></a>
+This store is created for making requests, since there are many request in every view. There are two states created, products and pageCount. Get,post,patch and addional getResponse actions are created for making requests. They used as `plain` requests but additionally in the first get action, states that are created changes accordingly. Other ones just returns responses from API.
 
 
 # Frontend Components <a name="components"></a>
