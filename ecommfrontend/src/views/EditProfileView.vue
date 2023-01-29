@@ -41,7 +41,7 @@
             </div>
             <div class="mb-3 form-check">
                 <input v-model="tokenStore.user.is_vendor" type="checkbox" class="form-check-input" id="vendor">
-                <label class="form-check-label text-white" for="rememerme">Vendor Status</label>
+                <label class="form-check-label text-white" for="vendor">Vendor Status</label>
             </div>                                   
             <div class="d-flex justify-content-end">
                 <button @click.prevent="submit" type="submit" class="btn btn-primary">Edit</button>
@@ -54,52 +54,20 @@
 <script>
 import {useTokenStore} from '../stores/TokensStore'
 import { useToast } from "vue-toastification"
-import axios from 'axios'
+import { useRequestStore } from '../stores/RequestStore'
 export default {
     setup(){
         const tokenStore = useTokenStore()        
-        const options = {
-                position: "top-center",
-                timeout: 5000,
-                closeOnClick: true,
-                pauseOnFocusLoss: true,
-                pauseOnHover: true,
-                draggable: true,
-                draggablePercent: 0.6,
-                showCloseButtonOnHover: false,
-                hideProgressBar: true,
-                closeButton: "button",
-                icon: true,
-                rtl: false
-                }       
+        const request= useRequestStore()
         const toast = useToast()       
-        return {tokenStore,options,toast}
+        return {tokenStore,toast,request}
     },   
     methods:{
-        submit(){                                  
-            axios
-                .patch('api/users/me/',this.tokenStore.user)
-                .then(response=>{
-                    if (response.status === 200){
-                        this.toast.success('Profile Edited succesfully',this.options)
-                    }                 
-                })               
-                .catch(error=> {
-                    if (error.response) { 
-                        // The request was made and the server responded with a status code
-                        // that falls out of the range of 2xx                  
-                        let errorType = `${error.response.status}  ${error.response.statusText}`
-                        this.toast.error(errorType,this.options)                       
-                    } else if (error.request) { 
-                        // The request was made but no response was received
-                        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-                        // http.ClientRequest in node.js                   
-                        this.toast.error(error.request,this.options);                    
-                    } else {                       
-                        // Something happened in setting up the request that triggered an Error
-                        this.toast.error(error.message,this.options);
-                    }                   
-                });       
+        async submit(){
+            const response = await this.request.patchRequest('api/users/me/',this.tokenStore.user)
+            if (response.status === 200){
+                this.toast.success('Profile Edited successfully')
+            }  
         }
     }  
 }

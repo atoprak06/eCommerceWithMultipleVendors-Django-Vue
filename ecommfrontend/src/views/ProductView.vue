@@ -92,7 +92,7 @@
                     <label for="product_status" class="form-label text-white">Status:</label>
                     <select v-model="product.product_state" class="form-control" id="product_status">
                         <option value="active">Active</option>
-                        <option value="deactive">Deactive</option>
+                        <option value="deactive">Deactivate</option>
 
                     </select>                    
                 </div>
@@ -112,6 +112,7 @@ import {useCartStore} from '../stores/CartStore'
 import { useToast } from "vue-toastification"
 import moment from 'moment'
 import Paginate from "vuejs-paginate-next"
+import { useRequestStore } from '../stores/RequestStore'
 
 
 export default {
@@ -127,46 +128,35 @@ export default {
     },
     setup(){
         const tokenStore = useTokenStore()
-        const cartStore = useCartStore()
-        const options = {
-                position: "top-center",
-                timeout: 5000,
-                closeOnClick: true,
-                pauseOnFocusLoss: true,
-                pauseOnHover: true,
-                draggable: true,
-                draggablePercent: 0.6,
-                showCloseButtonOnHover: false,
-                hideProgressBar: true,
-                closeButton: "button",
-                icon: true,
-                rtl: false
-                }       
+        const cartStore = useCartStore()        
         const toast = useToast()
+        const request = useRequestStore()
        
-        return {tokenStore,cartStore,toast,options}
+        return {tokenStore,cartStore,toast,request}
     },
-    async mounted(){        
-        await axios.get(`api/products/${ this.$route.params.id }`)
-            .then(response=>{
-                this.product = response.data                
-            })
+    async mounted(){
+        const response = await this.request.getRequestResponse(`api/products/${ this.$route.params.id }`)
+        if(response.status === 200 || response.status === 201){
+            this.product = response.data
+        }       
         await this.getComments(1)        
     },
     methods:{
         async submitComment(){
             let data = {}            
             data.comment = this.submitText
-            data.star = this.rateStar           
-
-            await axios.post(`api/products/${this.$route.params.id}/comments/`,data)
-                .then(this.toast.success('You commented on the product',this.options))
+            data.star = this.rateStar 
+            const response = await this.request.postRequest(`api/products/${this.$route.params.id}/comments/`,data)
+            if(response.status === 200 || response.status === 201){
+                this.toast.success('You commented on the product')
+            }
+            await this.getComments(1)
         },
         async submit(){
             await axios.patch(`api/products/${ this.$route.params.id }/`,this.product,{headers: {'Content-Type': 'multipart/form-data'}})
                 .then(response=>{
                     if (response.status === 200){
-                        this.toast.success('Product Edited succesfully',this.options)                        
+                        this.toast.success('Product Edited successfully')                        
                     }                 
                 })
                 .catch(error=> {
@@ -174,25 +164,24 @@ export default {
                         // The request was made and the server responded with a status code
                         // that falls out of the range of 2xx                  
                         let errorType = `${error.response.status}  ${error.response.statusText}`
-                        this.toast.error(errorType,this.options)                       
+                        this.toast.error(errorType)                       
                     } else if (error.request) { 
                         // The request was made but no response was received
                         // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
                         // http.ClientRequest in node.js                   
-                        this.toast.error(error.request,this.options);                    
+                        this.toast.error(error.request);                    
                     } else {                       
                         // Something happened in setting up the request that triggered an Error
-                        this.toast.error(error.message,this.options);
+                        this.toast.error(error.message);
                     }                   
                 });           
         },
         async getComments(selected=1){
-            await axios.get(`api/products/${this.$route.params.id}/comments/?page=${selected}`)
-            .then(response=>{
+            const response = await this.request.getRequestResponse(`api/products/${this.$route.params.id}/comments/?page=${selected}`)
+            if(response.status === 200 || response.status === 201){
                 this.pageCount = Math.ceil(response.data['count']/16)
                 this.comments = response.data['results']
-                
-            })
+            }           
         },
         getTime(created_at){            
             return moment(created_at).fromNow()

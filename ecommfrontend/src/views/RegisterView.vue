@@ -60,8 +60,8 @@
 </template>
 
 <script>
-import axios from 'axios'
 import { useToast } from "vue-toastification"
+import { useRequestStore } from '../stores/RequestStore'
 
 export default {
     name:'SignInView',
@@ -80,26 +80,13 @@ export default {
             user_address: '',           
         }
     },
-    setup(){   
-        const options = {
-            position: "top-center",
-            timeout: 5000,
-            closeOnClick: true,
-            pauseOnFocusLoss: true,
-            pauseOnHover: true,
-            draggable: true,
-            draggablePercent: 0.6,
-            showCloseButtonOnHover: false,
-            hideProgressBar: true,
-            closeButton: "button",
-            icon: true,
-            rtl: false
-        }       
+    setup(){         
         const toast = useToast()
-        return {options,toast}
+        const request = useRequestStore()
+        return {toast,request}
     },
     methods:{
-        submit(){            
+        async submit(){            
             const user={
                 username :this.username,
                 email: this.email,
@@ -112,32 +99,12 @@ export default {
                 user_country:this.user_country,
                 user_city:this.user_city,
                 user_address:this.user_address
-            }            
-            axios
-                .post('api/users/',user)
-                .then(response=>{                    
-                    if(response.status===201){                        
-                        this.$router.push('/sign-in')
-                        this.toast.success('Registered successfully')
-                    }                                     
-                })
-                .catch(error=> {
-                    if (error.response) { 
-                        // The request was made and the server responded with a status code
-                        // that falls out of the range of 2xx                  
-                        let errorType = `${error.response.status}  ${error.response.statusText}`
-                        this.toast.error(errorType,this.options)                       
-                    } else if (error.request) { 
-                        // The request was made but no response was received
-                        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-                        // http.ClientRequest in node.js                   
-                        this.toast.error(error.request,this.options);                    
-                    } else {                       
-                        // Something happened in setting up the request that triggered an Error
-                        this.toast.error(error.message,this.options);
-                    }                   
-                });      
-                
+            }
+            const response = await this.request.postRequest('api/users/',user)
+            if(response.status===201){                        
+                this.$router.push('/sign-in')
+                this.toast.success('Registered successfully')
+            }
         }
     }
 }

@@ -41,26 +41,13 @@
 </template>
 
 <script>
-import axios from 'axios'
 import { useToast } from "vue-toastification"
+import { useRequestStore } from '../stores/RequestStore'
 export default {
-    setup(){        
-        const options = {
-            position: "top-center",
-            timeout: 5000,
-            closeOnClick: true,
-            pauseOnFocusLoss: true,
-            pauseOnHover: true,
-            draggable: true,
-            draggablePercent: 0.6,
-            showCloseButtonOnHover: false,
-            hideProgressBar: true,
-            closeButton: "button",
-            icon: true,
-            rtl: false
-        }       
-    const toast = useToast() 
-    return {options,toast}
+    setup(){ 
+    const toast = useToast()
+    const request = useRequestStore()
+    return {toast,request}
     },
     data(){
         return {
@@ -69,29 +56,10 @@ export default {
     },
     methods:{
         async submit(){
-
-           await axios.post('api/products/',this.product,{headers: {'Content-Type': 'multipart/form-data'}})
-                .then(response=>{                    
-                    if (response.status === 201){                            
-                        this.toast.success('New Product Added',this.options)
-                    } 
-                }) 
-                .catch(error=> {
-                    if (error.response) { 
-                        // The request was made and the server responded with a status code
-                        // that falls out of the range of 2xx                  
-                        let errorType = `${error.response.status}  ${error.response.statusText}`
-                        this.toast.error(errorType,this.options)                       
-                    } else if (error.request) { 
-                        // The request was made but no response was received
-                        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-                        // http.ClientRequest in node.js                   
-                        this.toast.error(error.request,this.options);                    
-                    } else {                       
-                        // Something happened in setting up the request that triggered an Error
-                        this.toast.error(error.message,this.options);
-                    }                   
-                });                           
+            const response = await this.request.postRequest('api/products/',this.product,{headers: {'Content-Type': 'multipart/form-data'}})
+            if (response.status === 201){                            
+                this.toast.success('New Product Added')
+            } 
         },
         uploadImg(e){            
             const target = e.target;
