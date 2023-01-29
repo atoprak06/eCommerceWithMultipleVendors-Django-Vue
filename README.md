@@ -31,6 +31,7 @@
     6. [Cart View](#cartview)
     7. [User Page View](#userpageview)
     8. [Register SignIn and Edit Profile View](#registersignineditprofileview)
+12. [Frontend Router](#frontendrouter)
 
 
 
@@ -284,3 +285,6 @@ Main user page. User can see products that is created by them, can navigate orde
 
 ## Register Sign In and Edit Profile View <a name="registersignineditprofileview"></a>
 Basic user registration and sign in form are presented in these views. In the sign in view, request made to API and then request is used by djoser. If user provided correct username and password, backend sends token as an response. That token then used in the tokenStore and axios's common `Authorization` value since djoser requires it that way to check authentications, ref to docs:https://djoser.readthedocs.io/en/latest/sample_usage.html. In the register view, basic user creation form is presented and submitted to back end. Djoser checks validations if the user provided correct username,password and email. In the Edit Profile view, user can edit data belongs to them.
+
+# Frontend Router <a name="frontendrouter"></a>
+Collection of routes for the views that has been created. From all of them product, vendors and categories expect parameters. For the product router, slug and id passed. Vendors route get username. Lastly categories get title and id parameters. Each parameter is used to retrieve data from the API on the backend. Router guard is used in here against non authorized users. UserPage, NewProduct and EditProfile routers are available to authorized users only. If unauthorized user tries to use them, it redirects to SignIn page. More information can be found on the vue docs: https://router.vuejs.org/guide/advanced/navigation-guards.html
