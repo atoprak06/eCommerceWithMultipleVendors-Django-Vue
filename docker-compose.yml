@@ -1,0 +1,34 @@
+version: '4.7'
+services:
+  front-end:
+    container_name: frontend
+    command: live-server dist
+    build: ecommfrontend/
+    ports: 
+      - 8080:8080
+    depends_on:
+      - back-end 
+    networks:
+      - mynetwork  
+  back-end:
+    container_name: backend
+    build: ecommbackend/
+    command: python manage.py runserver 0.0.0.0:8000
+    ports: 
+      - 8000:8000
+    depends_on:
+      - postgresdb
+    networks:
+      - mynetwork  
+  postgresdb:
+    container_name: postgresdb
+    image: postgres    
+    environment: 
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123456
+    networks:
+      - mynetwork
+networks:
+  mynetwork:    
+    
