@@ -9,8 +9,7 @@
             <div class="mb-3">
                 <label for="product_category" class="form-label text-white">Category:</label>
                 <select v-model="product.category" class="form-select" id="product_category">
-                    <option value="Watch">Watch</option>
-                    <option value="Computer">Computer</option>
+                    <option v-for="category in categories" :value="category.title" :key="category.id">{{category.title}}</option>                    
                 </select>                   
             </div>
             <div class="mb-3">
@@ -26,7 +25,6 @@
                 <select v-model="product.product_state" class="form-control" id="product_status">
                     <option value="active">Active</option>
                     <option value="deactive">Deactive</option>
-
                 </select>                    
             </div>
             <div class="mb-3">
@@ -41,6 +39,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 import { useToast } from "vue-toastification"
 import { useRequestStore } from '../stores/RequestStore'
 export default {
@@ -51,15 +50,18 @@ export default {
     },
     data(){
         return {
-            product : {},           
+            product : {},
+            categories:[]      
         }
     },
     methods:{
         async submit(){
-            const response = await this.request.postRequest('api/products/',this.product,{headers: {'Content-Type': 'multipart/form-data'}})
-            if (response.status === 201){                            
-                this.toast.success('New Product Added')
-            } 
+            await axios.post('api/products/',this.product,{headers: {'Content-Type': 'multipart/form-data'}})
+                        .then(response => {                            
+                            if (response.status === 201){                            
+                                this.toast.success('New Product Added')
+                            } 
+                        })
         },
         uploadImg(e){            
             const target = e.target;
@@ -67,7 +69,11 @@ export default {
                 this.product.image_url=target.files[0]                
             }            
         }
-    }    
+    },
+    async created(){
+        const response = await this.request.getRequestResponse('api/categories/')        
+        this.categories = response.data['results']
+    }
 }
 
 </script>
