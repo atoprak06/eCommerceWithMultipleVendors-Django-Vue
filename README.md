@@ -33,7 +33,7 @@
     7. [User Page View](#userpageview)
     8. [Register SignIn and Edit Profile View](#registersignineditprofileview)
 12. [Frontend Router](#frontendrouter)
-
+13 .[Dockerize](#dockerize)
 
 
 
@@ -290,3 +290,6 @@ Basic user registration and sign in form are presented in these views. In the si
 
 # Frontend Router <a name="frontendrouter"></a>
 Collection of routes for the views that has been created. From all of them product, vendors and categories expect parameters. For the product router, slug and id passed. Vendors route get username. Lastly categories get title and id parameters. Each parameter is used to retrieve data from the API on the backend. Router guard is used in here against non authorized users. UserPage, NewProduct and EditProfile routers are available to authorized users only. If unauthorized user tries to use them, it redirects to SignIn page. More information can be found on the vue docs: https://router.vuejs.org/guide/advanced/navigation-guards.html
+
+# Dockerize <a name="dockerize"></a>
+To make app use in container, docker is used. Containers are really useful way to develop and maintain apps in different environmets. They also make deployment of the app faster. Docker is used for making containers and compose them together and has a lot of functionality over them. There are a lot of prebuilt images to dockerize app easily. More info can be found on the official docker web site : https://docs.docker.com/get-started/ . Note that to dockerize this app correctly, change backend settings.py file with settings2.py since in the docker-compose file, `postgres` database is used instead of the default sqlite.
