@@ -33,7 +33,7 @@
     7. [User Page View](#userpageview)
     8. [Register SignIn and Edit Profile View](#registersignineditprofileview)
 12. [Frontend Router](#frontendrouter)
-13 .[Dockerize](#dockerize)
+13. [Dockerize](#dockerize)
 
 
 
