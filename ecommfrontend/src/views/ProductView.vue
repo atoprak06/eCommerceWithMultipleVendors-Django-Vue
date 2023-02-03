@@ -152,7 +152,10 @@ export default {
             }
             await this.getComments(1)
         },
-        async submit(){
+        async submit(){            
+            if(!this.preview){
+                delete this.product.image_url                
+            }
             await axios.patch(`api/products/${ this.$route.params.id }/`,this.product,{headers: {'Content-Type': 'multipart/form-data'}})
                 .then(response=>{
                     if (response.status === 200){
